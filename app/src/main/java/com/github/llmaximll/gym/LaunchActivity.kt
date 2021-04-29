@@ -7,12 +7,12 @@ import androidx.fragment.app.commit
 import com.github.llmaximll.gym.fragments.Hello1Fragment
 import com.github.llmaximll.gym.fragments.Hello2Fragment
 import com.github.llmaximll.gym.fragments.Hello3Fragment
-
-private const val NAME_SHARED_PREFERENCES = "first_launch"
+import com.github.llmaximll.gym.fragments.Hello4Fragment
 
 class LaunchActivity : AppCompatActivity(),
         Hello1Fragment.Callbacks,
-        Hello2Fragment.Callbacks {
+        Hello2Fragment.Callbacks,
+        Hello3Fragment.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
@@ -39,6 +39,16 @@ class LaunchActivity : AppCompatActivity(),
 
     override fun onHello2Fragment() {
         val fragment = Hello3Fragment.newInstance()
+        supportFragmentManager.commit {
+            setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out,
+                    android.R.animator.fade_in, android.R.animator.fade_out)
+            replace(R.id.container_fragment, fragment)
+            addToBackStack(null)
+        }
+    }
+
+    override fun onHello3Fragment() {
+        val fragment = Hello4Fragment.newInstance()
         supportFragmentManager.commit {
             setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out,
                     android.R.animator.fade_in, android.R.animator.fade_out)

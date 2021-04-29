@@ -10,7 +10,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 
-private const val NAME_SHARED_PREFERENCES = "first_launch"
+private const val NAME_SHARED_PREFERENCES = "shared_preferences"
+private const val FIRST_LAUNCH = "first_launch"
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         val sharedPreference =
                 getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-        val firstLaunch = sharedPreference.getBoolean(NAME_SHARED_PREFERENCES, false)
+        val firstLaunch = sharedPreference.getBoolean(FIRST_LAUNCH, false)
         if (!firstLaunch) {
             val intent = Intent(this, LaunchActivity::class.java)
             startActivity(intent)
