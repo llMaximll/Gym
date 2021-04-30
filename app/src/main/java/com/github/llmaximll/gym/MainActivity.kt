@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.fragment.app.commit
+import com.github.llmaximll.gym.fragments.LogInFragment
 
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val FIRST_LAUNCH = "first_launch"
@@ -26,12 +28,14 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LaunchActivity::class.java)
             startActivity(intent)
             finish()
-        } else {
-            Toast.makeText(
-                    this,
-                    "!first_launch",
-                    Toast.LENGTH_LONG
-            ).show()
+        }
+        val currentFragment =
+                supportFragmentManager.findFragmentById(R.id.container_fragment)
+        if (currentFragment == null) {
+            val fragment = LogInFragment.newInstance()
+            supportFragmentManager.commit {
+                add(R.id.container_fragment, fragment)
+            }
         }
     }
 }

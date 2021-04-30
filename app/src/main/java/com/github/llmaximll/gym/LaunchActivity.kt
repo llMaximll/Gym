@@ -1,16 +1,22 @@
 package com.github.llmaximll.gym
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.github.llmaximll.gym.fragments.*
 
+private const val NAME_SHARED_PREFERENCES = "shared_preferences"
+private const val FIRST_LAUNCH = "first_launch"
+
 class LaunchActivity : AppCompatActivity(),
         Hello1Fragment.Callbacks,
         Hello2Fragment.Callbacks,
         Hello3Fragment.Callbacks,
-        Hello4Fragment.Callbacks {
+        Hello4Fragment.Callbacks,
+        Hello5Fragment.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch)
@@ -43,6 +49,17 @@ class LaunchActivity : AppCompatActivity(),
     override fun onHello4Fragment() {
         val fragment = Hello5Fragment.newInstance()
         changeFragment(fragment)
+    }
+
+    override fun onHello5Fragment() {
+        val sharedPreference =
+                getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+        editor.putBoolean(FIRST_LAUNCH, true)
+        editor.apply()
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun changeFragment(fragment: Fragment) {
