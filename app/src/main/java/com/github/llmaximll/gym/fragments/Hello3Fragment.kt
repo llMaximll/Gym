@@ -2,15 +2,22 @@ package com.github.llmaximll.gym.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.llmaximll.gym.R
 
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val TRAIN = "train"
+private const val GENDER = "gender"
+private const val KEY_GENDER = "key_gender"
+
+private const val TAG = "Hello3Fragment"
 
 class Hello3Fragment : Fragment() {
 
@@ -22,9 +29,18 @@ class Hello3Fragment : Fragment() {
     private lateinit var spineImageButton: ImageButton
     private lateinit var torsoImageButton: ImageButton
     private lateinit var legsImageButton: ImageButton
+    private lateinit var humanImageView: ImageView
+
+    private var gender: Int? = null
 
     private var callbacks: Callbacks? = null
     private var train: Int? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        gender = arguments?.getInt(KEY_GENDER) as Int
+        Log.i(TAG, "gender=$gender")
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -38,6 +54,14 @@ class Hello3Fragment : Fragment() {
         spineImageButton = view.findViewById(R.id.spine_imageButton)
         torsoImageButton = view.findViewById(R.id.torso_imageButton)
         legsImageButton = view.findViewById(R.id.legs_imageButton)
+        humanImageView = view.findViewById(R.id.human_imageView)
+
+        if (gender != -1) {
+            when (gender) {
+                0 -> humanImageView.setBackgroundResource(R.drawable.woman)
+                1 -> humanImageView.setBackgroundResource(R.drawable.man)
+            }
+        }
 
         return view
     }
@@ -79,6 +103,8 @@ class Hello3Fragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): Hello3Fragment = Hello3Fragment()
+        fun newInstance(gender: Int): Hello3Fragment = Hello3Fragment().apply {
+            arguments = Bundle().apply { putInt(KEY_GENDER, gender) }
+        }
     }
 }
