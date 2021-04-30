@@ -37,8 +37,8 @@ class LaunchActivity : AppCompatActivity(),
         }
     }
 
-    override fun onHello2Fragment() {
-        val fragment = Hello3Fragment.newInstance()
+    override fun onHello2Fragment(gender: Int) {
+        val fragment = Hello3Fragment.newInstance(gender)
         supportFragmentManager.commit {
             setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out,
                     android.R.animator.fade_in, android.R.animator.fade_out)

@@ -2,19 +2,26 @@ package com.github.llmaximll.gym.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.llmaximll.gym.R
 
+private const val NAME_SHARED_PREFERENCES = "shared_preferences"
+private const val GENDER = "gender"
+
+private const val TAG = "Hello2Fragment"
+
 class Hello2Fragment : Fragment() {
 
-    private var gender: Boolean? = null
+    private var gender: Int? = null
 
     interface Callbacks {
-        fun onHello2Fragment()
+        fun onHello2Fragment(gender: Int)
     }
 
     private lateinit var femaleImageButton: ImageButton
@@ -41,18 +48,38 @@ class Hello2Fragment : Fragment() {
     override fun onStart() {
         super.onStart()
         femaleImageButton.setOnClickListener {
-            gender = false
+            gender = 0
             femaleImageButton.setBackgroundResource(R.drawable.button_launch_rectangle_on)
             maleImageButton.setBackgroundResource(R.drawable.button_launch_rectangle_off)
         }
         maleImageButton.setOnClickListener {
-            gender = true
+            gender = 1
             femaleImageButton.setBackgroundResource(R.drawable.button_launch_rectangle_off)
             maleImageButton.setBackgroundResource(R.drawable.button_launch_rectangle_on)
         }
         nextImageButton.setOnClickListener {
-            callbacks?.onHello2Fragment()
+            if (gender != null) {
+                callbacks?.onHello2Fragment(gender!!)
+            } else {
+                Toast.makeText(
+                        requireContext(),
+                        "Choose gender",
+                        Toast.LENGTH_LONG
+                ).show()
+            }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (gender != null) {
+            val sharedPreference =
+                    context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+            val editor = sharedPreference?.edit()
+            editor?.putInt(GENDER, gender!!)
+            editor?.apply()
+        }
+        Log.i(TAG, "gender=$gender")
     }
 
     override fun onDetach() {
