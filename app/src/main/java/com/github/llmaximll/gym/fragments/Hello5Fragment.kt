@@ -16,9 +16,20 @@ private const val SP_WEIGHT = "sp_weight"
 
 class Hello5Fragment : Fragment() {
 
+    interface Callbacks {
+        fun onHello5Fragment()
+    }
+
     private lateinit var heightEditText: EditText
     private lateinit var weightEditText: EditText
     private lateinit var nextImageBoolean: ImageButton
+
+    private var callbacks: Callbacks? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_hello_5, container, false)
@@ -28,6 +39,13 @@ class Hello5Fragment : Fragment() {
         nextImageBoolean = view.findViewById(R.id.next_imageButton)
 
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        nextImageBoolean.setOnClickListener {
+            callbacks?.onHello5Fragment()
+        }
     }
 
     override fun onStop() {
@@ -50,6 +68,11 @@ class Hello5Fragment : Fragment() {
             editor?.putInt(SP_WEIGHT, weight)
             editor?.apply()
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
     companion object {
