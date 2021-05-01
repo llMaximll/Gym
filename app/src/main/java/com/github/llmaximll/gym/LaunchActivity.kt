@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.github.llmaximll.gym.fragments.*
+import com.github.llmaximll.gym.fragments.hello.*
 
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val FIRST_LAUNCH = "first_launch"
