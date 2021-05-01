@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/female"/>
+            android:src="@mipmap/female"/>
 
         <TextView
             android:id="@+id/male_textView"
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/male"/>
+            android:src="@mipmap/male"/>
 
         <TextView
             android:id="@+id/female_textView"

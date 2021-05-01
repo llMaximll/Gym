@@ -54,11 +54,11 @@
             android:background="@drawable/button_launch_rectangle_selector"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginStart="40dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/weight"/>
+            android:src="@mipmap/weight"/>
 
         <TextView
             android:id="@+id/textView3"
@@ -91,11 +91,11 @@
             android:background="@drawable/button_launch_rectangle_selector"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginStart="40dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/yoga"/>
+            android:src="@mipmap/yoga"/>
 
         <TextView
             android:id="@+id/textView4"
@@ -128,11 +128,11 @@
             android:background="@drawable/button_launch_rectangle_selector"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginStart="40dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/triceps"/>
+            android:src="@mipmap/triceps"/>
 
         <TextView
             android:id="@+id/textView5"
