@@ -58,8 +58,8 @@ class Hello3Fragment : Fragment() {
 
         if (gender != -1) {
             when (gender) {
-                0 -> humanImageView.setBackgroundResource(R.drawable.woman)
-                1 -> humanImageView.setBackgroundResource(R.drawable.man)
+                0 -> humanImageView.setBackgroundResource(R.mipmap.woman)
+                1 -> humanImageView.setBackgroundResource(R.mipmap.man)
             }
         }
 
