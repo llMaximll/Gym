@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#992E70BE">
 
     <TextView
@@ -13,10 +14,10 @@
         android:layout_marginTop="150dp"
         android:layout_marginEnd="8dp"
         android:text="Step 3/5"
-        android:textSize="50sp"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="@+id/description_textView"
+        app:layout_constraintStart_toStartOf="@+id/description_textView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -27,8 +28,8 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="8dp"
         android:text="What do you want to work on?"
-        android:textSize="18sp"
         android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/step_textView" />
@@ -50,11 +51,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@id/frameLayout2"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout2"
         app:layout_constraintEnd_toStartOf="@id/human_imageView"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description_textView"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <ImageButton
             android:id="@+id/hands_imageButton"
@@ -69,7 +74,7 @@
             android:layout_gravity="center"
             android:text="Hands"
             android:textColor="#6E9CD2"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </FrameLayout>
 
     <FrameLayout
@@ -77,11 +82,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@id/frameLayout3"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout3"
         app:layout_constraintEnd_toStartOf="@id/human_imageView"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout1">
 
         <ImageButton
             android:id="@+id/spine_imageButton"
@@ -96,7 +104,7 @@
             android:layout_gravity="center"
             android:text="Spine"
             android:textColor="#6E9CD2"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </FrameLayout>
 
     <FrameLayout
@@ -104,11 +112,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@id/frameLayout4"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout4"
         app:layout_constraintEnd_toStartOf="@id/human_imageView"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2">
 
         <ImageButton
             android:id="@+id/torso_imageButton"
@@ -123,7 +134,7 @@
             android:layout_gravity="center"
             android:text="Torso"
             android:textColor="#6E9CD2"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </FrameLayout>
 
     <FrameLayout
@@ -131,11 +142,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="68dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/human_imageView"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout3">
 
         <ImageButton
             android:id="@+id/legs_imageButton"

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#992E70BE">
 
     <TextView
@@ -13,10 +14,10 @@
         android:layout_marginTop="150dp"
         android:layout_marginEnd="8dp"
         android:text="Step 5/5"
-        android:textSize="50sp"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="@+id/description_textView"
+        app:layout_constraintStart_toStartOf="@+id/description_textView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -27,8 +28,8 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="8dp"
         android:text="How often do you exercise?"
-        android:textSize="18sp"
         android:textColor="@color/white"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/step_textView" />
@@ -37,44 +38,56 @@
         android:id="@+id/height_editText"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginTop="80dp"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="30dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_launch_rectangle_off"
+        android:hint="Height"
+        android:inputType="number"
         android:paddingStart="40dp"
         android:paddingEnd="40dp"
-        android:hint="Height"
         android:textSize="24sp"
-        android:background="@drawable/button_launch_rectangle_off"
-        app:layout_constraintTop_toBottomOf="@id/description_textView"
+        app:layout_constraintBottom_toTopOf="@+id/weight_editText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/description_textView"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
         android:id="@+id/weight_editText"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginTop="30dp"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="30dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_launch_rectangle_off"
+        android:hint="Weight"
+        android:inputType="number"
         android:paddingStart="40dp"
         android:paddingEnd="40dp"
-        android:hint="Weight"
         android:textSize="24sp"
-        android:background="@drawable/button_launch_rectangle_off"
-        app:layout_constraintTop_toBottomOf="@id/height_editText"
+        app:layout_constraintBottom_toTopOf="@id/guideline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/height_editText" />
 
     <FrameLayout
         android:id="@+id/frameLayout4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline4">
 
         <ImageButton
             android:id="@+id/next_imageButton"
@@ -89,7 +102,14 @@
             android:layout_gravity="center"
             android:text="Next"
             android:textColor="#6E9CD2"
-            android:textSize="24sp"/>
+            android:textSize="24sp" />
     </FrameLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="150dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
