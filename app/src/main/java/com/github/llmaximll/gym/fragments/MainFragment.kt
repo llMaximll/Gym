@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.github.llmaximll.gym.BuildConfig
 import com.github.llmaximll.gym.R
 
-class SignUpFragment : Fragment() {
+class MainFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = layoutInflater.inflate(R.layout.fragment_sign_up, container, false)
+        val view = layoutInflater.inflate(R.layout.fragment_main, container, false)
 
 
 
@@ -19,6 +18,6 @@ class SignUpFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): SignUpFragment = SignUpFragment()
+        fun newInstance(): MainFragment = MainFragment()
     }
 }
