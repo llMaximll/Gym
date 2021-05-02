@@ -1,72 +1,51 @@
 package com.github.llmaximll.gym
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.github.llmaximll.gym.fragments.LogInFragment
-import com.github.llmaximll.gym.fragments.MainFragment
-import com.github.llmaximll.gym.fragments.SignUpFragment
+import com.github.llmaximll.gym.fragments.LessonsFragment
+import com.github.llmaximll.gym.fragments.PlanFragment
+import com.github.llmaximll.gym.fragments.ProfileFragment
+import com.github.llmaximll.gym.fragments.ReportsFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-private const val NAME_SHARED_PREFERENCES = "shared_preferences"
-private const val SP_FIRST_LAUNCH = "first_launch"
+class MainActivity : AppCompatActivity() {
 
-class MainActivity : AppCompatActivity(),
-        LogInFragment.Callbacks,
-        SignUpFragment.Callbacks {
+    private lateinit var bottomNavigationView: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val sharedPreference =
-                getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-        val firstLaunch = sharedPreference.getBoolean(SP_FIRST_LAUNCH, false)
-        if (!firstLaunch) {
-            val intent = Intent(this, LaunchActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
+
         val currentFragment =
                 supportFragmentManager.findFragmentById(R.id.container_fragment)
         if (currentFragment == null) {
-            val fragment = LogInFragment.newInstance()
+            val fragment = PlanFragment.newInstance()
             supportFragmentManager.commit {
                 add(R.id.container_fragment, fragment)
             }
         }
+
+        setBottomNavigationView()
     }
 
-    override fun onLogInFragment(mode: Int) {
-        var fragment: Fragment? = null
-        when (mode) {
-            0 -> {
-                fragment = SignUpFragment.newInstance()
+    private fun setBottomNavigationView() {
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            val fragment = when (item.itemId) {
+                R.id.plan -> PlanFragment.newInstance()
+                R.id.lessons -> LessonsFragment.newInstance()
+                R.id.reports -> ReportsFragment.newInstance()
+                R.id.profile -> ProfileFragment.newInstance()
+                else -> PlanFragment.newInstance()
             }
-            1 -> {
-                fragment = MainFragment.newInstance()
+            supportFragmentManager.commit {
+                replace(R.id.container_fragment, fragment)
             }
-        }
-        if (fragment != null) {
-            changeFragment(fragment, true)
-        }
-    }
 
-    override fun onSignUpFragment() {
-        val fragment = LogInFragment.newInstance()
-        changeFragment(fragment, false)
-    }
-
-    private fun changeFragment(fragment: Fragment, addBackStack: Boolean) {
-        supportFragmentManager.commit {
-            setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out,
-                    android.R.animator.fade_in, android.R.animator.fade_out)
-            replace(R.id.container_fragment, fragment)
-            if (addBackStack) {
-                addToBackStack(null)
-            }
+            true
         }
     }
 }

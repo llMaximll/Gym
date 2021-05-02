@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/plan"
+        android:title="Plan"
+        android:icon="@mipmap/plan"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/lessons"
+        android:title="Lessons"
+        android:icon="@mipmap/lessons"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/reports"
+        android:title="Reports"
+        android:icon="@mipmap/reports"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/profile"
+        android:title="Profile"
+        android:icon="@mipmap/profile"
+        app:showAsAction="ifRoom|withText"/>
+</menu>

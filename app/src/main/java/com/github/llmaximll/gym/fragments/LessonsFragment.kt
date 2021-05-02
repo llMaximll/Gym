@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.llmaximll.gym.R
 
-class MainFragment : Fragment() {
+class LessonsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = layoutInflater.inflate(R.layout.fragment_main, container, false)
+        val view = layoutInflater.inflate(R.layout.fragment_lessons, container, false)
 
 
 
@@ -18,6 +18,6 @@ class MainFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): MainFragment = MainFragment()
+        fun newInstance(): LessonsFragment = LessonsFragment()
     }
 }

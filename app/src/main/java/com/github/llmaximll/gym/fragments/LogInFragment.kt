@@ -73,13 +73,17 @@ class LogInFragment : Fragment() {
                                     log(TAG, "post=$post")
                                 }
                                 override fun onFailure(call: Call<Map<String, Map<String, Int>>>?, t: Throwable?) {
-                                    if (t?.message == "java.lang.NumberFormatException: For input string: " +
-                                            "\"Error username or password\"") {
-                                        toast("Неверный логин или пароль")
-                                    } else {
-                                        toast(t?.message!!)
-                                    }
-                                    t.printStackTrace()
+                                    when (t?.message) {
+                                        "java.lang.NumberFormatException: For input string: \"Error username or password\"" -> {
+                                            toast("Неверный логин или пароль")
+                                        }
+                                        "java.lang.NumberFormatException: For input string: \"User is active\"" -> {
+                                            toast("Пользователь уже активен")
+                                        }
+                                        else -> {
+                                            toast(t?.message!!)
+                                            t.printStackTrace()
+                                        } }
                                 }
                             })
                 } else {
