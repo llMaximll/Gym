@@ -1,4 +1,4 @@
-package com.github.llmaximll.gym.fragments
+package com.github.llmaximll.gym.fragments.hello
 
 import android.content.Context
 import android.os.Bundle
@@ -34,7 +34,7 @@ class Hello1Fragment : Fragment() {
 
         imageButton1 = view.findViewById(R.id.imageButton1)
         imageButton2 = view.findViewById(R.id.imageButton2)
-        imageButton3 = view.findViewById(R.id.imageButton3)
+        imageButton3 = view.findViewById(R.id.signUp_imageButton)
 
         return view
     }
