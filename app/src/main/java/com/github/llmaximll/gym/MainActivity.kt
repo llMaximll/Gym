@@ -15,7 +15,8 @@ private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val SP_FIRST_LAUNCH = "first_launch"
 
 class MainActivity : AppCompatActivity(),
-        LogInFragment.Callbacks {
+        LogInFragment.Callbacks,
+        SignUpFragment.Callbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -49,16 +50,23 @@ class MainActivity : AppCompatActivity(),
             }
         }
         if (fragment != null) {
-            changeFragment(fragment)
+            changeFragment(fragment, true)
         }
     }
 
-    private fun changeFragment(fragment: Fragment) {
+    override fun onSignUpFragment() {
+        val fragment = LogInFragment.newInstance()
+        changeFragment(fragment, false)
+    }
+
+    private fun changeFragment(fragment: Fragment, addBackStack: Boolean) {
         supportFragmentManager.commit {
             setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out,
                     android.R.animator.fade_in, android.R.animator.fade_out)
             replace(R.id.container_fragment, fragment)
-            addToBackStack(null)
+            if (addBackStack) {
+                addToBackStack(null)
+            }
         }
     }
 }

@@ -13,7 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.llmaximll.gym.BuildConfig
-import com.github.llmaximll.gym.MainActivity
 import com.github.llmaximll.gym.R
 import com.github.llmaximll.gym.retrofit.NetworkService
 import retrofit2.Call
@@ -46,10 +45,10 @@ class LogInFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_log_in, container, false)
 
-        nameEditText = view.findViewById(R.id.editText1)
+        nameEditText = view.findViewById(R.id.mail_editText)
         passwordEditText = view.findViewById(R.id.editText2)
         signUp = view.findViewById(R.id.sign_up_textView)
-        signInImageButton = view.findViewById(R.id.imageButton3)
+        signInImageButton = view.findViewById(R.id.signUp_imageButton)
 
         return view
     }
@@ -70,6 +69,7 @@ class LogInFragment : Fragment() {
                                         saveToken(post)
                                     }
                                     callbacks?.onLogInFragment(1)
+                                    toast("Успешно!")
                                     log(TAG, "post=$post")
                                 }
                                 override fun onFailure(call: Call<Map<String, Map<String, Int>>>?, t: Throwable?) {
