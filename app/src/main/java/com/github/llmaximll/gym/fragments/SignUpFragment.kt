@@ -62,8 +62,8 @@ class SignUpFragment : Fragment() {
                     context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
             val name = nameEditText.text.toString()
             val mail = mailEditText.text.toString()
-            val height = sharedPreference?.getInt(SP_HEIGHT, 0).toString()
-            val weight = sharedPreference?.getInt(SP_WEIGHT, 0).toString()
+            val height = sharedPreference?.getInt(SP_HEIGHT, 1).toString()
+            val weight = sharedPreference?.getInt(SP_WEIGHT, 1).toString()
             if (checkField(name, mail, password1EditText.text.toString(), password2EditText.text.toString(), height, weight)) {
                 NetworkService.instance
                         ?.getJSONApi()
