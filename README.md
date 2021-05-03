@@ -4,6 +4,8 @@
 
 Session-1
 
+![sessions-1](https://user-images.githubusercontent.com/62645670/116912692-fe1c3a00-ac61-11eb-9847-c8e7446b3596.jpg)
+
 При первом запуске приложения запускается LaunchActivity, в которой пользователь через фрагменты указывает различные настройки. По завершению появляется основная Activity (LogInFragment).
 
 Session-2
