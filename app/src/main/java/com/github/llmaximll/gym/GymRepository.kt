@@ -1,6 +1,8 @@
 package com.github.llmaximll.gym
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.github.llmaximll.gym.dataclasses.Lessons
 import com.github.llmaximll.gym.network.NetworkService
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,7 +22,6 @@ class GymRepository {
                     override fun onResponse(call: Call<Map<String, Map<String, Int>>>?, response: Response<Map<String, Map<String, Int>>>?) {
                         data = response?.body()
                         val token: Int = data?.get("notice")?.get("token")!!
-                        log(TAG, "data1 = $data, token = $token")
                         cosmeticView.message.value = "Успешно!"
                         cosmeticView.isSuccessful.value = true
                         cosmeticView.token.value = token
@@ -65,6 +66,26 @@ class GymRepository {
                 })
 
         return data
+    }
+
+    fun getLessons(cosmeticView: CosmeticView) {
+        var data: List<Lessons>?
+        NetworkService.instance
+                ?.getJSONApi()
+                ?.getLessons()
+                ?.enqueue(object : Callback<List<Lessons>> {
+                    override fun onResponse(call: Call<List<Lessons>>?, response: Response<List<Lessons>>?) {
+                        data = response?.body()
+                        cosmeticView.isSuccessful.value = true
+                        cosmeticView.message.value = "Успешно!"
+                        cosmeticView.lessons.value = data
+                    }
+                    override fun onFailure(call: Call<List<Lessons>>?, t: Throwable?) {
+                        cosmeticView.isSuccessful.value = false
+                        cosmeticView.message.value = t?.message
+                    }
+                })
+
     }
 
     private fun log(tag: String, message: String) {

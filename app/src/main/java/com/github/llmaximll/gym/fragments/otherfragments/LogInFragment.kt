@@ -59,7 +59,6 @@ class LogInFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         signInImageButton.setOnClickListener {
-            log(TAG, "Button is pressed")
             if (nameEditText.text.toString() != "") {
                 if (passwordEditText.text.toString() != "") {
                     viewModel.signIn(nameEditText.text.toString(), passwordEditText.text.toString())
@@ -71,10 +70,6 @@ class LogInFragment : Fragment() {
             }
         }
         signUp.setOnClickListener {
-            val sharedPreference =
-                    context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-            val token = sharedPreference?.getInt(SP_TOKEN, 0)
-            log(TAG, "token=$token")
             callbacks?.onLogInFragment(0)
         }
     }
