@@ -1,13 +1,12 @@
 package com.github.llmaximll.gym
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import com.github.llmaximll.gym.fragments.LessonsFragment
-import com.github.llmaximll.gym.fragments.PlanFragment
-import com.github.llmaximll.gym.fragments.ProfileFragment
-import com.github.llmaximll.gym.fragments.ReportsFragment
+import com.github.llmaximll.gym.fragments.otherfragments.LessonsFragment
+import com.github.llmaximll.gym.fragments.otherfragments.PlanFragment
+import com.github.llmaximll.gym.fragments.otherfragments.ProfileFragment
+import com.github.llmaximll.gym.fragments.otherfragments.ReportsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {

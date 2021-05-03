@@ -1,4 +1,4 @@
-package com.github.llmaximll.gym.fragments
+package com.github.llmaximll.gym.fragments.otherfragments
 
 import android.content.Context
 import android.os.Bundle
@@ -12,12 +12,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.github.llmaximll.gym.BuildConfig
 import com.github.llmaximll.gym.R
-import com.github.llmaximll.gym.retrofit.NetworkService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.github.llmaximll.gym.vm.LogInVM
 
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val SP_TOKEN = "sp_t"
@@ -25,14 +23,14 @@ private const val TAG = "LogInFragment"
 
 class LogInFragment : Fragment() {
 
-    private lateinit var nameEditText: EditText
-    private lateinit var passwordEditText: EditText
-    private lateinit var signInImageButton: ImageButton
-
     interface Callbacks {
         fun onLogInFragment(mode: Int)
     }
 
+    private lateinit var viewModel: LogInVM
+    private lateinit var nameEditText: EditText
+    private lateinit var passwordEditText: EditText
+    private lateinit var signInImageButton: ImageButton
     private lateinit var signUp: TextView
 
     private var callbacks: Callbacks? = null
@@ -53,39 +51,18 @@ class LogInFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initObservers()
+    }
+
     override fun onStart() {
         super.onStart()
         signInImageButton.setOnClickListener {
             log(TAG, "Button is pressed")
             if (nameEditText.text.toString() != "") {
                 if (passwordEditText.text.toString() != "") {
-                    NetworkService.instance
-                            ?.getJSONApi()
-                            ?.signIn(nameEditText.text.toString(), passwordEditText.text.toString())
-                            ?.enqueue(object : Callback<Map<String, Map<String, Int>>> {
-                                override fun onResponse(call: Call<Map<String, Map<String, Int>>>?, response: Response<Map<String, Map<String, Int>>>?) {
-                                    val post = response?.body()
-                                    if (post != null) {
-                                        saveToken(post)
-                                    }
-                                    callbacks?.onLogInFragment(1)
-                                    toast("Успешно!")
-                                    log(TAG, "post=$post")
-                                }
-                                override fun onFailure(call: Call<Map<String, Map<String, Int>>>?, t: Throwable?) {
-                                    when (t?.message) {
-                                        "java.lang.NumberFormatException: For input string: \"Error username or password\"" -> {
-                                            toast("Неверный логин или пароль")
-                                        }
-                                        "java.lang.NumberFormatException: For input string: \"User is active\"" -> {
-                                            toast("Пользователь уже активен")
-                                        }
-                                        else -> {
-                                            toast(t?.message!!)
-                                            t.printStackTrace()
-                                        } }
-                                }
-                            })
+                    viewModel.signIn(nameEditText.text.toString(), passwordEditText.text.toString())
                 } else {
                     toast("Поле 'Пароль' пустое")
                 }
@@ -102,18 +79,42 @@ class LogInFragment : Fragment() {
         }
     }
 
-    private fun saveToken(post: Map<String, Map<String, Int>>) {
-        val sharedPreference =
-                context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-        val editor = sharedPreference?.edit()
-        val token: Int = post["notice"]?.get("token")!!
-        editor?.putInt(SP_TOKEN, token)
-        editor?.apply()
-    }
-
     override fun onDetach() {
         super.onDetach()
         callbacks = null
+    }
+
+    private fun initObservers() {
+        viewModel = ViewModelProvider(this).get(LogInVM::class.java)
+        viewModel.cosmeticView.message.observe(
+                viewLifecycleOwner,
+                { message ->
+                    toast(message)
+                }
+        )
+        viewModel.cosmeticView.isSuccessful.observe(
+                viewLifecycleOwner,
+                { isSuccessful ->
+                    if (isSuccessful) {
+                        callbacks?.onLogInFragment(1)
+                    }
+                }
+        )
+        viewModel.cosmeticView.token.observe(
+                viewLifecycleOwner,
+                { token ->
+                    if (token != null) {
+                        val sharedPreference =
+                                context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+                        val editor = sharedPreference?.edit()
+                        editor?.putInt(SP_TOKEN, token)
+                        editor?.apply()
+                        log(TAG, "token is saved [$token]")
+                    } else {
+                        log(TAG, "token = null")
+                    }
+                }
+        )
     }
 
     private fun log(tag: String, message: String) {

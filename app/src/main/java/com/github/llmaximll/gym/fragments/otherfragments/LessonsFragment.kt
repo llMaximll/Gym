@@ -1,4 +1,4 @@
-package com.github.llmaximll.gym.fragments
+package com.github.llmaximll.gym.fragments.otherfragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.llmaximll.gym.R
 
-class ProfileFragment : Fragment() {
+class LessonsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = layoutInflater.inflate(R.layout.fragment_profile, container, false)
+        val view = layoutInflater.inflate(R.layout.fragment_lessons, container, false)
 
 
 
@@ -18,6 +18,6 @@ class ProfileFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): ProfileFragment = ProfileFragment()
+        fun newInstance(): LessonsFragment = LessonsFragment()
     }
 }

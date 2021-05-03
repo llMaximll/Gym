@@ -1,4 +1,4 @@
-package com.github.llmaximll.gym.fragments.hello
+package com.github.llmaximll.gym.fragments.hellofragments
 
 import android.content.Context
 import android.os.Bundle

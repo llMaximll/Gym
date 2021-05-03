@@ -1,4 +1,4 @@
-package com.github.llmaximll.gym.fragments
+package com.github.llmaximll.gym.fragments.otherfragments
 
 import android.content.Context
 import android.os.Bundle
@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.llmaximll.gym.BuildConfig
 import com.github.llmaximll.gym.R
-import com.github.llmaximll.gym.retrofit.NetworkService
+import com.github.llmaximll.gym.network.NetworkService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

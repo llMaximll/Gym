@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.github.llmaximll.gym.fragments.LogInFragment
-import com.github.llmaximll.gym.fragments.SignUpFragment
+import com.github.llmaximll.gym.fragments.otherfragments.LogInFragment
+import com.github.llmaximll.gym.fragments.otherfragments.SignUpFragment
 
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val SP_FIRST_LAUNCH = "first_launch"

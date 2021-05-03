@@ -1,4 +1,4 @@
-package com.github.llmaximll.gym.fragments.hello
+package com.github.llmaximll.gym.fragments.hellofragments
 
 import android.content.Context
 import android.os.Bundle
@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.llmaximll.gym.R
 

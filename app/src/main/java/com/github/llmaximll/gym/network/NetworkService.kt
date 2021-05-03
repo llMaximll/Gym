@@ -1,4 +1,4 @@
-package com.github.llmaximll.gym.retrofit
+package com.github.llmaximll.gym.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
