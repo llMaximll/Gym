@@ -44,6 +44,29 @@ class GymRepository {
         return data
     }
 
+    fun signUp(name: String, mail: String, password: String,
+               height: String, weight: String, cosmeticView: CosmeticView): Map<String, Map<String, String>>? {
+        var data: Map<String, Map<String, String>>? = mapOf()
+
+        NetworkService.instance
+                ?.getJSONApi()
+                ?.signUp(name, mail, password, height, weight)
+                ?.enqueue(object : Callback<Map<String, Map<String, String>>>{
+                    override fun onResponse(call: Call<Map<String, Map<String, String>>>?,
+                                            response: Response<Map<String, Map<String, String>>>?) {
+                        data = response?.body()
+                        cosmeticView.isSuccessful.value = true
+                        cosmeticView.message.value = "Успешно!"
+                    }
+                    override fun onFailure(call: Call<Map<String, Map<String, String>>>?, t: Throwable?) {
+                        cosmeticView.isSuccessful.value = false
+                        cosmeticView.message.value = t?.message
+                    }
+                })
+
+        return data
+    }
+
     private fun log(tag: String, message: String) {
         if (BuildConfig.DEBUG) {
             Log.i(tag, message)

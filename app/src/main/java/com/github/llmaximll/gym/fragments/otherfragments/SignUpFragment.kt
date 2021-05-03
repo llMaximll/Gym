@@ -11,12 +11,10 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.github.llmaximll.gym.BuildConfig
 import com.github.llmaximll.gym.R
-import com.github.llmaximll.gym.network.NetworkService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.github.llmaximll.gym.vm.SignUpVM
 
 private const val TAG = "SignUpFragment"
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
@@ -29,6 +27,7 @@ class SignUpFragment : Fragment() {
         fun onSignUpFragment()
     }
 
+    private lateinit var viewModel: SignUpVM
     private lateinit var nameEditText: EditText
     private lateinit var mailEditText: EditText
     private lateinit var password1EditText: EditText
@@ -54,6 +53,11 @@ class SignUpFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initObservers()
+    }
+
     override fun onStart() {
         super.onStart()
         signUpImageButton.setOnClickListener {
@@ -65,18 +69,7 @@ class SignUpFragment : Fragment() {
             val height = sharedPreference?.getInt(SP_HEIGHT, 1).toString()
             val weight = sharedPreference?.getInt(SP_WEIGHT, 1).toString()
             if (checkField(name, mail, password1EditText.text.toString(), password2EditText.text.toString(), height, weight)) {
-                NetworkService.instance
-                        ?.getJSONApi()
-                        ?.signUp(name, mail, password2EditText.text.toString(), height, weight)
-                        ?.enqueue(object : Callback<Map<String, Map<String, String>>>{
-                            override fun onResponse(call: Call<Map<String, Map<String, String>>>?, response: Response<Map<String, Map<String, String>>>?) {
-                                callbacks?.onSignUpFragment()
-                                toast("Успешно!")
-                            }
-                            override fun onFailure(call: Call<Map<String, Map<String, String>>>?, t: Throwable?) {
-                                t?.printStackTrace()
-                            }
-                        })
+                viewModel.signUp(name, mail, password2EditText.text.toString(), height, weight)
             }
         }
     }
@@ -131,6 +124,24 @@ class SignUpFragment : Fragment() {
         }
 
         return flag
+    }
+
+    private fun initObservers() {
+        viewModel = ViewModelProvider(this).get(SignUpVM::class.java)
+        viewModel.cosmeticView.message.observe(
+                viewLifecycleOwner,
+                { message ->
+                    toast(message)
+                }
+        )
+        viewModel.cosmeticView.isSuccessful.observe(
+                viewLifecycleOwner,
+                { isSuccessful ->
+                    if (isSuccessful) {
+                        callbacks?.onSignUpFragment()
+                    }
+                }
+        )
     }
 
     private fun log(tag: String, message: String) {
