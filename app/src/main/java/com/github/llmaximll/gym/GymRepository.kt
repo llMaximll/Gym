@@ -3,6 +3,7 @@ package com.github.llmaximll.gym
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.github.llmaximll.gym.dataclasses.Lessons
+import com.github.llmaximll.gym.dataclasses.Profile
 import com.github.llmaximll.gym.network.NetworkService
 import retrofit2.Call
 import retrofit2.Callback
@@ -85,7 +86,42 @@ class GymRepository {
                         cosmeticView.message.value = t?.message
                     }
                 })
+    }
 
+    fun getProfile(token: String, profile: MutableLiveData<List<Profile>>, cosmeticView: CosmeticView) {
+        NetworkService.instance
+                ?.getJSONApi()
+                ?.getProfile(token)
+                ?.enqueue(object : Callback<List<Profile>> {
+                    override fun onResponse(call: Call<List<Profile>>?, response: Response<List<Profile>>?) {
+                        profile.value = response?.body()
+                        cosmeticView.isSuccessful.value = true
+                    }
+                    override fun onFailure(call: Call<List<Profile>>?, t: Throwable?) {
+                        cosmeticView.isSuccessful.value = false
+                        cosmeticView.message.value = t?.message
+                    }
+                })
+    }
+
+    fun signOut(username: String, cosmeticView: CosmeticView) {
+        NetworkService.instance
+                ?.getJSONApi()
+                ?.signOut(username)
+                ?.enqueue(object : Callback<Map<String, Map<String, String>>> {
+                    override fun onResponse(call: Call<Map<String, Map<String, String>>>?, response: Response<Map<String, Map<String, String>>>?) {
+                        when (val mes = response?.body()?.get("notice")?.get("text")) {
+                            "User log out" -> cosmeticView.message.value = "Успешно!"
+                            "User is not log in" -> cosmeticView.message.value = "Пользователь не в аккаунте"
+                            else -> cosmeticView.message.value = mes
+                        }
+                        cosmeticView.isSuccessful.value = true
+                    }
+                    override fun onFailure(call: Call<Map<String, Map<String, String>>>?, t: Throwable?) {
+                        cosmeticView.isSuccessful.value = false
+                        cosmeticView.message.value = t?.message
+                    }
+                })
     }
 
     private fun log(tag: String, message: String) {

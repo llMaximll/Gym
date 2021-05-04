@@ -1,15 +1,16 @@
 package com.github.llmaximll.gym
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import com.github.llmaximll.gym.fragments.otherfragments.LessonsFragment
-import com.github.llmaximll.gym.fragments.otherfragments.PlanFragment
-import com.github.llmaximll.gym.fragments.otherfragments.ProfileFragment
-import com.github.llmaximll.gym.fragments.otherfragments.ReportsFragment
+import com.github.llmaximll.gym.fragments.otherfragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity() {
+private const val TAG = "MainActivity"
+
+class MainActivity : AppCompatActivity(),
+        ProfileFragment.Callbacks {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -46,5 +47,18 @@ class MainActivity : AppCompatActivity() {
 
             true
         }
+        bottomNavigationView.setOnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.plan ->  { }
+                R.id.lessons -> { }
+                R.id.reports -> { }
+                R.id.profile -> { }
+            }
+        }
+    }
+
+    override fun onProfileFragment() {
+        val dialogFragment = ProfileBioDialogFragment.newInstance()
+        dialogFragment.show(supportFragmentManager, "ProfileBio")
     }
 }

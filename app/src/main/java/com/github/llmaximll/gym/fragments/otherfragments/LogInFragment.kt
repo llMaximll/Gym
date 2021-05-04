@@ -19,6 +19,7 @@ import com.github.llmaximll.gym.vm.LogInVM
 
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val SP_TOKEN = "sp_t"
+private const val SP_USERNAME = "sp_username"
 private const val TAG = "LogInFragment"
 
 class LogInFragment : Fragment() {
@@ -103,6 +104,7 @@ class LogInFragment : Fragment() {
                                 context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
                         val editor = sharedPreference?.edit()
                         editor?.putInt(SP_TOKEN, token)
+                        editor?.putString(SP_USERNAME, nameEditText.text.toString())
                         editor?.apply()
                         log(TAG, "token is saved [$token]")
                     } else {

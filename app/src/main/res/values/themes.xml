@@ -24,4 +24,8 @@
     <style name="Theme.Gym.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Gym.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ColorSwitchStyle">
+        <item name="colorControlActivated">#76A1D3</item>
+    </style>
 </resources>
