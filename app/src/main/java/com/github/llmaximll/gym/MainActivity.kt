@@ -1,7 +1,6 @@
 package com.github.llmaximll.gym
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.github.llmaximll.gym.fragments.otherfragments.*
@@ -9,7 +8,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),
+        ProfileFragment.Callbacks {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -53,6 +53,20 @@ class MainActivity : AppCompatActivity() {
                 R.id.reports -> { }
                 R.id.profile -> { }
             }
+        }
+    }
+
+    override fun onProfileFragment() {
+        val fragment = WebPolicyFragment.newInstance()
+        supportFragmentManager.commit {
+            setCustomAnimations(
+                    android.R.anim.slide_in_left,
+                    android.R.anim.slide_out_right,
+                    android.R.anim.slide_in_left,
+                    android.R.anim.slide_out_right,
+            )
+            addToBackStack(null)
+            replace(R.id.container_fragment, fragment)
         }
     }
 }

@@ -47,12 +47,13 @@ class ProfileFragment : Fragment() {
     private lateinit var biometricTextView: TextView
     private lateinit var shadowImageViewActivity: ImageView
     private lateinit var dialogTextView: TextView
+    private lateinit var policyTextView: TextView
 
     private var callbacks: Callbacks? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        callbacks = context as Callbacks
+        callbacks = context as Callbacks
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +74,7 @@ class ProfileFragment : Fragment() {
         biometricTextView = view.findViewById(R.id.biometric_textView)
         shadowImageViewActivity = activity?.findViewById(R.id.shadow_imageView)!!
         dialogTextView = view.findViewById(R.id.dialog_textView)
+        policyTextView = view.findViewById(R.id.policy_textView)
 
         initObservers()
         val sharedPreference =
@@ -102,6 +104,9 @@ class ProfileFragment : Fragment() {
             dialogFragment.setTargetFragment(this, REQUEST_DIALOG_CODE_START_DIALOG)
             dialogFragment.show(parentFragmentManager, "GenderDialogFragment")
             onPause()
+        }
+        policyTextView.setOnClickListener {
+            callbacks?.onProfileFragment()
         }
         signOutImageButton.setOnClickListener {
             viewModel.signOut(username)
