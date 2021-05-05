@@ -13,7 +13,6 @@ import com.github.llmaximll.gym.R
 
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val TRAIN = "train"
-private const val GENDER = "gender"
 private const val KEY_GENDER = "key_gender"
 
 private const val TAG = "Hello3Fragment"

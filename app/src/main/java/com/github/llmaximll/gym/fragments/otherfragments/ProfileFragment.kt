@@ -25,9 +25,11 @@ private const val NAME_SHARED_PREFERENCES = "shared_preferences"
 private const val SP_USERNAME = "sp_username"
 private const val SP_TOKEN = "sp_t"
 private const val TAG = "ProfileFragment"
-private const val REQUEST_DIALOG_CODE = 1
+private const val REQUEST_DIALOG_CODE_BIO = 1
+private const val REQUEST_DIALOG_CODE_START_DIALOG = 2
 private const val SP_HEIGHT = "sp_height"
 private const val SP_WEIGHT = "sp_weight"
+private const val SP_GENDER = "sp_gender"
 
 class ProfileFragment : Fragment() {
 
@@ -44,6 +46,7 @@ class ProfileFragment : Fragment() {
     private lateinit var genderTextView: TextView
     private lateinit var biometricTextView: TextView
     private lateinit var shadowImageViewActivity: ImageView
+    private lateinit var dialogTextView: TextView
 
     private var callbacks: Callbacks? = null
 
@@ -69,13 +72,17 @@ class ProfileFragment : Fragment() {
         signOutImageButton = view.findViewById(R.id.signOut_imageButton)
         biometricTextView = view.findViewById(R.id.biometric_textView)
         shadowImageViewActivity = activity?.findViewById(R.id.shadow_imageView)!!
+        dialogTextView = view.findViewById(R.id.dialog_textView)
 
         initObservers()
         val sharedPreference =
                 context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
         viewModel.getProfile(sharedPreference?.getInt(SP_TOKEN, 0).toString())
 
-        return view
+        val gender = sharedPreference?.getInt(SP_GENDER, 0)
+        genderTextView.text = if (gender == 1) "Male" else "Female"
+
+                return view
     }
 
     override fun onStart() {
@@ -84,8 +91,16 @@ class ProfileFragment : Fragment() {
             shadowImageViewActivity.isVisible = true
             animateAlpha(shadowImageViewActivity)
             val dialogFragment = ProfileBioDialogFragment.newInstance()
-            dialogFragment.setTargetFragment(this, REQUEST_DIALOG_CODE)
+            dialogFragment.setTargetFragment(this, REQUEST_DIALOG_CODE_BIO)
             dialogFragment.show(parentFragmentManager, "ProfileBioDialogFragment")
+            onPause()
+        }
+        dialogTextView.setOnClickListener {
+            shadowImageViewActivity.isVisible = true
+            animateAlpha(shadowImageViewActivity)
+            val dialogFragment = GenderDialogFragment.newInstance()
+            dialogFragment.setTargetFragment(this, REQUEST_DIALOG_CODE_START_DIALOG)
+            dialogFragment.show(parentFragmentManager, "GenderDialogFragment")
             onPause()
         }
         signOutImageButton.setOnClickListener {
@@ -97,13 +112,26 @@ class ProfileFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_DIALOG_CODE -> {
+                REQUEST_DIALOG_CODE_BIO -> {
                     val weight = data?.getIntExtra(ProfileBioDialogFragment.NAME_TAG_WEIGHT, 1)
                     val height = data?.getIntExtra(ProfileBioDialogFragment.NAME_TAG_HEIGHT, 1)
                     if (weight != null && height != null) {
                         val sharedPreference =
                                 context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
                         viewModel.editProfile(sharedPreference?.getInt(SP_TOKEN, 1).toString(), weight.toString(), height.toString())
+                    }
+                }
+                REQUEST_DIALOG_CODE_START_DIALOG -> {
+                    val bool = data?.getBooleanExtra(GenderDialogFragment.NAME_TAG_GENDER, false)
+                    if (bool != null) {
+                        val gender = if (bool) 1 else 0
+                        val sharedPreference =
+                                context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+                        val editor = sharedPreference?.edit()
+                        editor?.putInt(SP_GENDER, gender)
+                        editor?.apply()
+                        genderTextView.text = if (bool) "Male" else "Female"
+                        toast("Данные обновлены")
                     }
                 }
             }

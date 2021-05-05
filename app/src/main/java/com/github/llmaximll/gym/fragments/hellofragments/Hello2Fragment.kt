@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import com.github.llmaximll.gym.R
 
 private const val NAME_SHARED_PREFERENCES = "shared_preferences"
-private const val GENDER = "gender"
+private const val SP_GENDER = "gender"
 
 private const val TAG = "Hello2Fragment"
 
@@ -76,7 +76,7 @@ class Hello2Fragment : Fragment() {
             val sharedPreference =
                     context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
             val editor = sharedPreference?.edit()
-            editor?.putInt(GENDER, gender!!)
+            editor?.putInt(SP_GENDER, gender!!)
             editor?.apply()
         }
         Log.i(TAG, "gender=$gender")
