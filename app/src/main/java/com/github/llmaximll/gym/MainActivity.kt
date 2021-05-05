@@ -9,8 +9,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity(),
-        ProfileFragment.Callbacks {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -55,10 +54,5 @@ class MainActivity : AppCompatActivity(),
                 R.id.profile -> { }
             }
         }
-    }
-
-    override fun onProfileFragment() {
-        val dialogFragment = ProfileBioDialogFragment.newInstance()
-        dialogFragment.show(supportFragmentManager, "ProfileBio")
     }
 }

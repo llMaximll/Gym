@@ -124,6 +124,26 @@ class GymRepository {
                 })
     }
 
+    fun editProfile(token: String, weight: String, height: String, cosmeticView: CosmeticView) {
+        NetworkService.instance
+                ?.getJSONApi()
+                ?.editProfile(token, weight, height)
+                ?.enqueue(object : Callback<Map<String, Map<String, String>>> {
+                    override fun onResponse(call: Call<Map<String, Map<String, String>>>?, response: Response<Map<String, Map<String, String>>>?) {
+                        val data = response?.body()
+                        cosmeticView.isSuccessful.value = true
+                        when (data?.get("notice")?.get("text")) {
+                            "User update" -> cosmeticView.message.value = "Данные обновлены"
+                            else -> cosmeticView.message.value = data?.get("notice")?.get("text")
+                        }
+                    }
+                    override fun onFailure(call: Call<Map<String, Map<String, String>>>?, t: Throwable?) {
+                        cosmeticView.isSuccessful.value = false
+                        cosmeticView.message.value = t?.message
+                    }
+                })
+    }
+
     private fun log(tag: String, message: String) {
         if (BuildConfig.DEBUG) {
             Log.i(tag, message)

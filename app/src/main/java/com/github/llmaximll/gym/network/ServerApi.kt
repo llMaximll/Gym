@@ -5,6 +5,7 @@ import com.github.llmaximll.gym.dataclasses.Profile
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 interface ServerApi {
@@ -30,5 +31,11 @@ interface ServerApi {
 
     @POST("signout")
     fun signOut(@Query("username") username: String):
+            Call<Map<String, Map<String, String>>>
+
+    @PUT("editeprofile")
+    fun editProfile(@Query("token") token: String,
+                    @Query("weight") weight: String,
+                    @Query("height") height: String):
             Call<Map<String, Map<String, String>>>
 }

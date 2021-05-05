@@ -10,7 +10,7 @@ class ProfileVM : ViewModel() {
     private val repository = GymRepository()
 
     val cosmeticView = CosmeticView()
-    val profile = MutableLiveData<List<Profile>>()
+    var profile = MutableLiveData<List<Profile>>()
 
     fun getProfile(token: String) {
         repository.getProfile(token, profile, cosmeticView)
@@ -18,5 +18,9 @@ class ProfileVM : ViewModel() {
 
     fun signOut(username: String) {
         repository.signOut(username, cosmeticView)
+    }
+
+    fun editProfile(token: String, weight: String, height: String) {
+        repository.editProfile(token, weight, height, cosmeticView)
     }
 }

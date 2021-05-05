@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_main_top"
@@ -92,7 +88,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ScrollView
+    <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -214,7 +210,7 @@
             </LinearLayout>
         </ScrollView>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -273,14 +269,4 @@
                 app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/shadow_imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="#80FFFFFF"
-        android:visibility="invisible"
-        android:alpha="0.0"/>
-
-</FrameLayout>
+</LinearLayout>
