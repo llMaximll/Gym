@@ -2,11 +2,9 @@ package com.github.llmaximll.gym.network
 
 import com.github.llmaximll.gym.dataclasses.Lessons
 import com.github.llmaximll.gym.dataclasses.Profile
+import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ServerApi {
     @POST("signin")
@@ -38,4 +36,9 @@ interface ServerApi {
                     @Query("weight") weight: String,
                     @Query("height") height: String):
             Call<Map<String, Map<String, String>>>
+
+    @GET
+    @Streaming
+    fun downloadImage(@Url url: String):
+            Call<ResponseBody>
 }

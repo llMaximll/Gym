@@ -1,13 +1,18 @@
 package com.github.llmaximll.gym
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.github.llmaximll.gym.dataclasses.Images
 import com.github.llmaximll.gym.dataclasses.Lessons
 import com.github.llmaximll.gym.dataclasses.Profile
 import com.github.llmaximll.gym.network.NetworkService
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 private const val TAG = "Repository"
 
@@ -27,6 +32,7 @@ class GymRepository {
                         cosmeticView.isSuccessful.value = true
                         cosmeticView.token.value = token
                     }
+
                     override fun onFailure(call: Call<Map<String, Map<String, Int>>>?, t: Throwable?) {
                         cosmeticView.isSuccessful.value = false
                         when (t?.message) {
@@ -53,13 +59,14 @@ class GymRepository {
         NetworkService.instance
                 ?.getJSONApi()
                 ?.signUp(name, mail, password, height, weight)
-                ?.enqueue(object : Callback<Map<String, Map<String, String>>>{
+                ?.enqueue(object : Callback<Map<String, Map<String, String>>> {
                     override fun onResponse(call: Call<Map<String, Map<String, String>>>?,
                                             response: Response<Map<String, Map<String, String>>>?) {
                         data = response?.body()
                         cosmeticView.isSuccessful.value = true
                         cosmeticView.message.value = "Успешно!"
                     }
+
                     override fun onFailure(call: Call<Map<String, Map<String, String>>>?, t: Throwable?) {
                         cosmeticView.isSuccessful.value = false
                         cosmeticView.message.value = t?.message
@@ -81,6 +88,7 @@ class GymRepository {
                         cosmeticView.message.value = "Успешно!"
                         cosmeticView.lessons.value = data
                     }
+
                     override fun onFailure(call: Call<List<Lessons>>?, t: Throwable?) {
                         cosmeticView.isSuccessful.value = false
                         cosmeticView.message.value = t?.message
@@ -97,6 +105,7 @@ class GymRepository {
                         profile.value = response?.body()
                         cosmeticView.isSuccessful.value = true
                     }
+
                     override fun onFailure(call: Call<List<Profile>>?, t: Throwable?) {
                         cosmeticView.isSuccessful.value = false
                         cosmeticView.message.value = t?.message
@@ -117,6 +126,7 @@ class GymRepository {
                         }
                         cosmeticView.isSuccessful.value = true
                     }
+
                     override fun onFailure(call: Call<Map<String, Map<String, String>>>?, t: Throwable?) {
                         cosmeticView.isSuccessful.value = false
                         cosmeticView.message.value = t?.message
@@ -137,9 +147,37 @@ class GymRepository {
                             else -> cosmeticView.message.value = data?.get("notice")?.get("text")
                         }
                     }
+
                     override fun onFailure(call: Call<Map<String, Map<String, String>>>?, t: Throwable?) {
                         cosmeticView.isSuccessful.value = false
                         cosmeticView.message.value = t?.message
+                    }
+                })
+    }
+
+    fun downloadImage(url: String, category: String, image: MutableLiveData<Images>) {
+        var count = 0
+        NetworkService.instance
+                ?.getJSONApi()
+                ?.downloadImage(url)
+                ?.enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
+                        if (response?.isSuccessful == true) {
+                            val data = response.body()
+                            val stream = data?.byteStream()
+                            val bitmap: Bitmap = BitmapFactory.decodeStream(stream)
+                            image.value = Images(bitmap, category)
+                            count++
+                        } else {
+                            try {
+                                Log.d("TAG", "response error: " + response?.errorBody()?.string().toString())
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                    override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
+                        log(TAG, "failure | ${t?.message}")
                     }
                 })
     }

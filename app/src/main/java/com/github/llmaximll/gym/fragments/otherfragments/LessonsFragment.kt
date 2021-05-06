@@ -2,6 +2,7 @@ package com.github.llmaximll.gym.fragments.otherfragments
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,7 +30,23 @@ class LessonsFragment : Fragment() {
     private lateinit var tabs: TabLayout
     private lateinit var viewPager2: ViewPager2
 
-    private var lessons: List<Lessons>? = null
+    private var adapter = PagerAdapter(listOf())
+
+    private var bitmap: Bitmap? = null
+    private var countHands = 0
+    private var countSpine = 0
+    private var countTorso = 0
+    private var countLegs = 0
+    private val bitmapHands = mutableListOf<Bitmap>()
+    private val bitmapSpine = mutableListOf<Bitmap>()
+    private val bitmapTorso = mutableListOf<Bitmap>()
+    private val bitmapLegs = mutableListOf<Bitmap>()
+    private val handsLessons = mutableListOf<Lessons>()
+    private val spineLessons = mutableListOf<Lessons>()
+    private val torsoLessons = mutableListOf<Lessons>()
+    private val legsLessons = mutableListOf<Lessons>()
+
+    private var lessons: List<Lessons>? = listOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_lessons, container, false)
@@ -37,7 +54,7 @@ class LessonsFragment : Fragment() {
         tabs = view.findViewById(R.id.tabs)
         viewPager2 = view.findViewById(R.id.viewPager2)
 
-        viewPager2.adapter = PagerAdapter(listOf())
+        viewPager2.adapter = adapter
 
         return view
     }
@@ -45,6 +62,7 @@ class LessonsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
+        viewModel.downloadImages()
         viewModel.getLessons()
         TabLayoutMediator(tabs, viewPager2) { tab, position ->
             when (position) {
@@ -72,7 +90,25 @@ class LessonsFragment : Fragment() {
                 {
                     lessons = it
                     if (it != null) {
-                        viewPager2.adapter = PagerAdapter(it)
+                        adapter = PagerAdapter(it)
+                        viewPager2.adapter = adapter
+                    }
+                }
+        )
+        viewModel.imageLD.observe(
+                viewLifecycleOwner,
+                { image ->
+                    bitmap = image.bitmap
+                    when (image.category) {
+                        "hands" -> bitmapHands.add(image.bitmap)
+                        "spine" -> bitmapSpine.add(image.bitmap)
+                        "torso" -> bitmapTorso.add(image.bitmap)
+                        "legs" -> bitmapLegs.add(image.bitmap)
+                    }
+                    if (bitmapHands.size >= 3 && bitmapSpine.size >= 3 && bitmapTorso.size >= 3 && bitmapLegs.size >= 3) {
+                        adapter = PagerAdapter(lessons!!)
+                        viewPager2.adapter = adapter
+                        log(TAG, "update adapter")
                     }
                 }
         )
@@ -113,11 +149,41 @@ class LessonsFragment : Fragment() {
         }
 
         fun bind(lessonsList: List<Lessons>) {
-            when (lessonsList[0].category) {
-                "hands" -> imageView.setImageResource(R.mipmap.hands)
-                "spine" -> imageView.setImageResource(R.mipmap.spine)
-                "torso" -> imageView.setImageResource(R.mipmap.torso)
-                "legs" -> imageView.setImageResource(R.mipmap.legs)
+            if (bitmapHands.size >= 3) {
+                when (lessonsList[0].category) {
+                    "hands" -> {
+                        when (countHands) {
+                            0 -> imageView.setImageBitmap(bitmapHands[0])
+                            1 -> imageView.setImageBitmap(bitmapHands[1])
+                            2 -> imageView.setImageBitmap(bitmapHands[2])
+                        }
+                        countHands++
+                    }
+                    "spine" -> {
+                        when (countSpine) {
+                            0 -> imageView.setImageBitmap(bitmapSpine[0])
+                            1 -> imageView.setImageBitmap(bitmapSpine[1])
+                            2 -> imageView.setImageBitmap(bitmapSpine[2])
+                        }
+                        countSpine++
+                    }
+                    "torso" -> {
+                        when (countTorso) {
+                            0 -> imageView.setImageBitmap(bitmapTorso[0])
+                            1 -> imageView.setImageBitmap(bitmapTorso[1])
+                            2 -> imageView.setImageBitmap(bitmapTorso[2])
+                        }
+                        countTorso++
+                    }
+                    "legs" -> {
+                        when (countLegs) {
+                            0 -> imageView.setImageBitmap(bitmapLegs[0])
+                            1 -> imageView.setImageBitmap(bitmapLegs[1])
+                            2 -> imageView.setImageBitmap(bitmapLegs[2])
+                        }
+                        countLegs++
+                    }
+                }
             }
         }
 
@@ -155,10 +221,7 @@ class LessonsFragment : Fragment() {
 
         fun bind(position: Int, lessonsList: List<Lessons>) {
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            val handsLessons = mutableListOf<Lessons>()
-            val spineLessons = mutableListOf<Lessons>()
-            val torsoLessons = mutableListOf<Lessons>()
-            val legsLessons = mutableListOf<Lessons>()
+
             lessonsList.forEach { lesson ->
                 when (lesson.category) {
                     "hands" -> handsLessons.add(lesson)
@@ -187,7 +250,6 @@ class LessonsFragment : Fragment() {
     private inner class PagerAdapter(val lessonsList: List<Lessons>) : RecyclerView.Adapter<PagerHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerHolder {
             val view = layoutInflater.inflate(R.layout.item_lessons_pager, parent, false)
-            log(TAG, "lessons=$lessonsList")
             return PagerHolder(view)
         }
         override fun onBindViewHolder(holder: PagerHolder, position: Int) {
