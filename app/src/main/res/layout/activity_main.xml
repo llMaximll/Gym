@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/container_fragment"
-    tools:context=".MainActivity"/>
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/container_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#F9F9F9"
+            app:itemRippleColor="#006E9CD2"
+            app:itemIconTint="#6E9CD2"
+            app:menu="@menu/fragment_main"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/shadow_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="#80FFFFFF"
+        android:visibility="invisible"
+        android:alpha="1.0"/>
+
+</FrameLayout>

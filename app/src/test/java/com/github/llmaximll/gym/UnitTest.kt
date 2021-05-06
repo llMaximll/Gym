@@ -1,7 +1,7 @@
 package com.github.llmaximll.gym
 
-import com.github.llmaximll.gym.fragments.LogInFragment
-import com.github.llmaximll.gym.fragments.SignUpFragment
+import com.github.llmaximll.gym.fragments.otherfragments.LogInFragment
+import com.github.llmaximll.gym.fragments.otherfragments.SignUpFragment
 import org.junit.Test
 
 import org.junit.Assert.*
