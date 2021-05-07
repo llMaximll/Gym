@@ -66,10 +66,10 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_profile, container, false)
 
-        weightTextView = view.findViewById(R.id.count_weight_textView)
-        heightTextView = view.findViewById(R.id.count_height_textView)
-        nameTextView = view.findViewById(R.id.name_textView)
-        genderTextView = view.findViewById(R.id.gender_textView)
+        weightTextView = view.findViewById(R.id.count_scores_textView)
+        heightTextView = view.findViewById(R.id.count_minutes_textView)
+        nameTextView = view.findViewById(R.id.pushUps_textView)
+        genderTextView = view.findViewById(R.id.minutes_textView)
         signOutImageButton = view.findViewById(R.id.signOut_imageButton)
         biometricTextView = view.findViewById(R.id.biometric_textView)
         shadowImageViewActivity = activity?.findViewById(R.id.shadow_imageView)!!
