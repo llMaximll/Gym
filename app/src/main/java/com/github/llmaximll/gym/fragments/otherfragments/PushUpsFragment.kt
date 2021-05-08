@@ -9,10 +9,12 @@ import android.webkit.WebView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.github.llmaximll.gym.BuildConfig
 import com.github.llmaximll.gym.R
 import com.github.llmaximll.gym.database.DatabaseHandler
 import com.github.llmaximll.gym.dataclasses.Exercise
+import com.github.llmaximll.gym.vm.PushUpsVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +27,7 @@ private const val TAG = "PushUpsFragment"
 
 class PushUpsFragment : Fragment() {
 
+    private lateinit var viewModel: PushUpsVM
     private lateinit var gifWebView: WebView
     private lateinit var scoresTextView: TextView
     private lateinit var minutesTextView: TextView
@@ -60,6 +63,9 @@ class PushUpsFragment : Fragment() {
         tapFrameLayout = view.findViewById(R.id.tap_frameLayout)
 
         gifWebView.loadUrl("file:///android_asset/otzimania.gif")
+        //init viewModel
+        viewModel = ViewModelProvider(this).get(PushUpsVM::class.java)
+        viewModel.initDB(requireContext())
 
         return view
     }
@@ -85,14 +91,7 @@ class PushUpsFragment : Fragment() {
                         scores--
                         scoresTextView.text = scores.toString()
                         if (scores == 0) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                val exercise: Exercise? = getExerciseDB(nameEx, numberEx.toString())
-                                if (exercise != null) {
-                                    updateExerciseDB(scores, minutes, cal)
-                                } else {
-                                    addExerciseDB(scores, minutes, cal)
-                                }
-                            }
+                            jobWithDB()
                         }
                     }
                     view.performClick()
@@ -102,32 +101,25 @@ class PushUpsFragment : Fragment() {
         }
     }
 
-    private fun getExerciseDB(nameEx: String, numberEx: String): Exercise? =
-            dbHandler?.getExercise(nameEx, numberEx)
-
-    private fun addExerciseDB(scores: Int, minutes: Int, cal: Float) {
-        val exercise = Exercise()
-        exercise.name = nameEx
-        exercise.numberEx = numberEx.toString()
-        exercise.scores = scores
-        exercise.minutes = minutes
-        exercise.cal = cal
-
-        val success: Boolean = dbHandler!!.addExercise(exercise)
-
-        if (success)
-            log(TAG, "Success | Insert DB")
-        else
-            log(TAG, "Failed | Insert DB")
-    }
-
-    private fun updateExerciseDB(scores: Int, minutes: Int, cal: Float) {
-        val success = dbHandler!!.updateExercise(nameEx, numberEx.toString(), scores, minutes, cal)
-
-        if (success)
-            log(TAG, "Success | Update DB")
-        else
-            log(TAG, "Failed | Update DB")
+    private fun jobWithDB() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val exercise: Exercise? = viewModel.getExerciseDB(nameEx, numberEx.toString())
+            if (exercise != null) {
+                val success = viewModel.updateExerciseDB(nameEx, numberEx.toString(),
+                        scores, minutes, cal)
+                if (success)
+                    log(TAG, "Success | Update DB")
+                else
+                    log(TAG, "Failed | Update DB")
+            } else {
+                val success = viewModel.addExerciseDB(nameEx, numberEx.toString(),
+                        scores, minutes, cal)
+                if (success)
+                    log(TAG, "Success | Insert DB")
+                else
+                    log(TAG, "Failed | Insert DB")
+            }
+        }
     }
 
     private fun animateView(view: View, reverse: Boolean) {

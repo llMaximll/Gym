@@ -11,7 +11,10 @@ import com.github.llmaximll.gym.dataclasses.Images
 import com.github.llmaximll.gym.dataclasses.Lessons
 import com.github.llmaximll.gym.dataclasses.Profile
 import com.github.llmaximll.gym.network.NetworkService
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,11 +25,11 @@ private const val TAG = "Repository"
 
 class GymRepository {
 
-//    private var dbHandler: DatabaseHandler? = null
-//
-//    fun initDBHandler(context: Context) {
-//        dbHandler = DatabaseHandler(context)
-//    }
+    private var dbHandler: DatabaseHandler? = null
+
+    fun initDBHandler(context: Context) {
+        dbHandler = DatabaseHandler(context)
+    }
 
     fun signIn(username: String, password: String, cosmeticView: CosmeticView): Map<String, Map<String, Int>>? {
         var data: Map<String, Map<String, Int>>? = mapOf()
@@ -192,31 +195,24 @@ class GymRepository {
                 })
     }
 
-//    fun getExerciseDB(nameEx: String, numberEx: String): Exercise? =
-//            dbHandler?.getExercise(nameEx, numberEx)
-//
-//    fun addExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Int, cal: Float): Boolean? {
-//        var success: Boolean? = null
-//        val exercise = Exercise()
-//        exercise.name = nameEx
-//        exercise.numberEx = numberEx.toString()
-//        exercise.scores = scores
-//        exercise.minutes = minutes
-//        exercise.cal = cal
-//
-//        CoroutineScope(Dispatchers.IO).launch {
-//            success = withContext(Dispatchers.Default) { dbHandler!!.addExercise(exercise) }
-//        }
-//
-//        success = dbHandler!!.addExercise(exercise)
-//
-//        if (success)
-//            log(com.github.llmaximll.gym.fragments.otherfragments.TAG, "Success | Insert DB")
-//        else
-//            log(com.github.llmaximll.gym.fragments.otherfragments.TAG, "Failed | Insert DB")
-//
-//        return success
-//    }
+    fun getExerciseDB(nameEx: String, numberEx: String): Exercise? = dbHandler?.getExercise(nameEx, numberEx)
+
+    suspend fun addExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Int, cal: Float): Boolean {
+        val success: Boolean?
+        val exercise = Exercise()
+        exercise.name = nameEx
+        exercise.numberEx = numberEx
+        exercise.scores = scores
+        exercise.minutes = minutes
+        exercise.cal = cal
+
+        success = withContext(Dispatchers.IO) { dbHandler!!.addExercise(exercise) }
+
+        return success
+    }
+
+    fun updateExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Int, cal: Float) =
+            dbHandler!!.updateExercise(nameEx, numberEx.toString(), scores, minutes, cal)
 
     private fun log(tag: String, message: String) {
         if (BuildConfig.DEBUG) {
