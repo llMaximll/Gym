@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity(),
         changeFragment(fragment, true)
     }
 
-    override fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int, minutes: Int) {
-        val fragment = PushUpsFragment.newInstance(nameEx, numberEx, scores, minutes)
+    override fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int) {
+        val fragment = PushUpsFragment.newInstance(nameEx, numberEx, scores)
         log(TAG, "scores=$scores")
         changeFragment(fragment, true)
     }

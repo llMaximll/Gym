@@ -26,7 +26,7 @@ private const val KEY_CATEGORY = "key_category"
 class PushUpsChoiceFragment : Fragment() {
 
     interface Callbacks {
-        fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int, minutes: Int)
+        fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int)
     }
     
     private lateinit var recyclerView: RecyclerView
@@ -89,16 +89,6 @@ class PushUpsChoiceFragment : Fragment() {
         }
     }
 
-    private fun getValuesItem(countItem: Int): List<Int> {
-        var valuesList = listOf<Int>()
-
-        when (countItem) {
-            12 -> valuesList = listOf(12, 13)
-        }
-
-        return valuesList
-    }
-
     private fun View.setListeners(countItem: Int) {
         if (countItem < countCompItems + 2) {
             this.setOnTouchListener { view, motionEvent ->
@@ -111,9 +101,8 @@ class PushUpsChoiceFragment : Fragment() {
                     }
                     MotionEvent.ACTION_UP -> {
                         animateView(this, true)
-                        log(TAG, "getValuesItem=${getValuesItem(countItem)}")
-                        callbacks?.onPushUpsChoiceFragment(category, countItem, getValuesItem(countItem)[0],
-                                getValuesItem(countItem)[1])
+                        log(TAG, "countItem=$countItem")
+                        callbacks?.onPushUpsChoiceFragment(category, countItem, countItem)
                         this.performClick()
                     }
                 }

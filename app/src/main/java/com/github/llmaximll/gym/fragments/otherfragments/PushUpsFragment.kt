@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 private const val KEY_NAME_EX = "key_name_ex"
 private const val KEY_NUMBER_EX = "key_number_ex"
 private const val KEY_SCORES = "key_scores"
-private const val KEY_MINUTES = "key_minutes"
 
 private const val TAG = "PushUpsFragment"
 
@@ -41,13 +40,11 @@ class PushUpsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // arguments
         nameEx = arguments?.getString(KEY_NAME_EX, "name_ex") ?: "name_ex"
         numberEx = arguments?.getInt(KEY_NUMBER_EX, 0) ?: 0
         log(TAG, "numberEx=$numberEx")
         scores = arguments?.getInt(KEY_SCORES, 0) ?: 404
-        minutes = arguments?.getInt(KEY_MINUTES, 0) ?: 404
         cal = 4f
         // init DB
         dbHandler = DatabaseHandler(requireContext())
@@ -87,9 +84,15 @@ class PushUpsFragment : Fragment() {
                     if (scores > 0) {
                         scores--
                         scoresTextView.text = scores.toString()
-                    } else {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            addExerciseDB(scores, minutes, cal)
+                        if (scores == 0) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val exercise: Exercise? = getExerciseDB(nameEx, numberEx.toString())
+                                if (exercise != null) {
+                                    updateExerciseDB(scores, minutes, cal)
+                                } else {
+                                    addExerciseDB(scores, minutes, cal)
+                                }
+                            }
                         }
                     }
                     view.performClick()
@@ -99,25 +102,32 @@ class PushUpsFragment : Fragment() {
         }
     }
 
+    private fun getExerciseDB(nameEx: String, numberEx: String): Exercise? =
+            dbHandler?.getExercise(nameEx, numberEx)
+
     private fun addExerciseDB(scores: Int, minutes: Int, cal: Float) {
         val exercise = Exercise()
-        var success = false
         exercise.name = nameEx
+        exercise.numberEx = numberEx.toString()
         exercise.scores = scores
         exercise.minutes = minutes
         exercise.cal = cal
 
-        try {
-            success = dbHandler!!.addExercise(exercise)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        if (success) {
-            log(TAG, "Success | DB")
-            log(TAG, dbHandler!!.getAllExercises())
-        } else {
-            log(TAG, "Failed | DB")
-        }
+        val success: Boolean = dbHandler!!.addExercise(exercise)
+
+        if (success)
+            log(TAG, "Success | Insert DB")
+        else
+            log(TAG, "Failed | Insert DB")
+    }
+
+    private fun updateExerciseDB(scores: Int, minutes: Int, cal: Float) {
+        val success = dbHandler!!.updateExercise(nameEx, numberEx.toString(), scores, minutes, cal)
+
+        if (success)
+            log(TAG, "Success | Update DB")
+        else
+            log(TAG, "Failed | Update DB")
     }
 
     private fun animateView(view: View, reverse: Boolean) {
@@ -159,12 +169,11 @@ class PushUpsFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(nameEx: String, numberEx: Int, scores: Int, minutes: Int): PushUpsFragment {
+        fun newInstance(nameEx: String, numberEx: Int, scores: Int): PushUpsFragment {
             val args = Bundle().apply {
                 putString(KEY_NAME_EX, nameEx)
                 putInt(KEY_NUMBER_EX, numberEx)
                 putInt(KEY_SCORES, scores)
-                putInt(KEY_MINUTES, minutes)
             }
             return PushUpsFragment().apply {
                 arguments = args

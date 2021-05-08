@@ -15,8 +15,8 @@ class DatabaseHandler(context: Context)
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable = "CREATE TABLE $TABLE_NAME " +
-                "($ID INTEGER PRIMARY KEY, $NAME_EX TEXT, $NUMBER_EX INTEGER, $SCORES INTEGER, " +
-                "$MINUTES INTEGER, $CAL REAL)"
+                "($ID INTEGER PRIMARY KEY, $COLUMN_NAME_EX TEXT, $COLUMN_NUMBER_EX TEXT, $COLUMN_SCORES INTEGER, " +
+                "$COLUMN_MINUTES INTEGER, $COLUMN_CAL REAL)"
         log(TAG, "Hello, World!")
         db?.execSQL(createTable)
     }
@@ -32,11 +32,11 @@ class DatabaseHandler(context: Context)
     fun addExercise(exercise: Exercise): Boolean {
         val db = this.writableDatabase
         val values = ContentValues()
-        values.put(NAME_EX, exercise.name)
-        values.put(NUMBER_EX, exercise.numberEx)
-        values.put(SCORES, exercise.scores)
-        values.put(MINUTES, exercise.minutes)
-        values.put(CAL, exercise.cal)
+        values.put(COLUMN_NAME_EX, exercise.name)
+        values.put(COLUMN_NUMBER_EX, exercise.numberEx)
+        values.put(COLUMN_SCORES, exercise.scores)
+        values.put(COLUMN_MINUTES, exercise.minutes)
+        values.put(COLUMN_CAL, exercise.cal)
         val success = db.insert(TABLE_NAME, null, values)
         db.close()
         log(TAG, "$success")
@@ -56,10 +56,10 @@ class DatabaseHandler(context: Context)
             if (cursor.moveToFirst()) {
                 do {
                     val id = cursor.getString(cursor.getColumnIndex(ID))
-                    val nameEx = cursor.getString(cursor.getColumnIndex(NAME_EX))
-                    val scores = cursor.getString(cursor.getColumnIndex(SCORES))
-                    val minutes = cursor.getString(cursor.getColumnIndex(MINUTES))
-                    val cal = cursor.getString(cursor.getColumnIndex(CAL))
+                    val nameEx = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_EX))
+                    val scores = cursor.getString(cursor.getColumnIndex(COLUMN_SCORES))
+                    val minutes = cursor.getString(cursor.getColumnIndex(COLUMN_MINUTES))
+                    val cal = cursor.getString(cursor.getColumnIndex(COLUMN_CAL))
 
                     allExercise = "$allExercise\n$id $nameEx $scores $minutes $cal"
                 } while (cursor.moveToNext())
@@ -68,6 +68,50 @@ class DatabaseHandler(context: Context)
         cursor.close()
         db.close()
         return allExercise
+    }
+
+    fun getExercise(nameEx: String, numberEx: String): Exercise? {
+        var exercise: Exercise? = null
+        val db = readableDatabase
+        val selectionArgs = arrayOf(nameEx, numberEx)
+        val cursor = db.query(TABLE_NAME, null, "$COLUMN_NAME_EX = ? AND $COLUMN_NUMBER_EX = ?",
+                selectionArgs, null, null, null)
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    exercise = Exercise()
+                    exercise.name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_EX))
+                    exercise.numberEx = cursor.getString(cursor.getColumnIndex(COLUMN_NUMBER_EX))
+                    exercise.scores = cursor.getInt(cursor.getColumnIndex(COLUMN_SCORES))
+                    exercise.minutes = cursor.getInt(cursor.getColumnIndex(COLUMN_MINUTES))
+                    exercise.cal = cursor.getFloat(cursor.getColumnIndex(COLUMN_CAL))
+
+                } while (cursor.moveToNext())
+            }
+        }
+
+        cursor.close()
+        db.close()
+
+        return exercise
+    }
+
+    fun updateExercise(nameEx: String, numberEx: String, scores: Int, minutes: Int, cal: Float): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues()
+        values.apply {
+            put(COLUMN_SCORES, scores)
+            put(COLUMN_MINUTES, minutes)
+            put(COLUMN_CAL, cal)
+        }
+        val selectionArgs = arrayOf(nameEx, numberEx)
+        val success = db.update(TABLE_NAME, values, "$COLUMN_NAME_EX = ? AND $COLUMN_NUMBER_EX = ?",
+                selectionArgs)
+
+        db.close()
+
+        return (Integer.parseInt("$success") != -1)
     }
 
     private fun log(tag: String, message: String) {
@@ -81,10 +125,10 @@ class DatabaseHandler(context: Context)
         private const val DB_VERSION = 1
         private const val TABLE_NAME = "exercises"
         private const val ID = "id"
-        private const val NAME_EX = "name_ex"
-        private const val NUMBER_EX = "number_ex"
-        private const val SCORES = "scores"
-        private const val MINUTES = "minutes"
-        private const val CAL  = "cal"
+        private const val COLUMN_NAME_EX = "name_ex"
+        private const val COLUMN_NUMBER_EX = "number_ex"
+        private const val COLUMN_SCORES = "scores"
+        private const val COLUMN_MINUTES = "minutes"
+        private const val COLUMN_CAL  = "cal"
     }
 }
