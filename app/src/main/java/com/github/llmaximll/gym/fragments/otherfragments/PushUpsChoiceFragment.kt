@@ -5,14 +5,8 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.*
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -108,7 +102,17 @@ class PushUpsChoiceFragment : Fragment() {
                 }
                 true
             }
+        } else {
+            this.setOnClickListener {
+                toast("Необходимо пройти предыдущие уроки")
+            }
         }
+    }
+
+    private fun toast(message: String) {
+        val toast = Toast.makeText(requireContext(), message, Toast.LENGTH_LONG)
+        toast.setGravity(Gravity.TOP, 0, 0)
+        toast.show()
     }
 
     private fun animateView(view: View, reverse: Boolean) {

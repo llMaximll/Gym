@@ -70,7 +70,7 @@ class ProfileFragment : Fragment() {
         heightTextView = view.findViewById(R.id.count_minutes_textView)
         nameTextView = view.findViewById(R.id.pushUps_textView)
         genderTextView = view.findViewById(R.id.minutes_textView)
-        signOutImageButton = view.findViewById(R.id.signOut_imageButton)
+        signOutImageButton = view.findViewById(R.id.stop_imageButton)
         biometricTextView = view.findViewById(R.id.biometric_textView)
         shadowImageViewActivity = activity?.findViewById(R.id.shadow_imageView)!!
         dialogTextView = view.findViewById(R.id.dialog_textView)
@@ -84,7 +84,7 @@ class ProfileFragment : Fragment() {
         val gender = sharedPreference?.getInt(SP_GENDER, 0)
         genderTextView.text = if (gender == 1) "Male" else "Female"
 
-                return view
+        return view
     }
 
     override fun onStart() {

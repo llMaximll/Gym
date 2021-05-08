@@ -229,7 +229,7 @@
                 app:layout_constraintVertical_bias="0.7">
 
                 <ImageButton
-                    android:id="@+id/signOut_imageButton"
+                    android:id="@+id/stop_imageButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/background_sign_out_selector" />

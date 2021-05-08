@@ -2,44 +2,62 @@ package com.github.llmaximll.gym.fragments.otherfragments
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.*
 import android.webkit.WebView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.github.llmaximll.gym.BuildConfig
 import com.github.llmaximll.gym.R
-import com.github.llmaximll.gym.database.DatabaseHandler
 import com.github.llmaximll.gym.dataclasses.Exercise
 import com.github.llmaximll.gym.vm.PushUpsVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.math.round
 
 private const val KEY_NAME_EX = "key_name_ex"
 private const val KEY_NUMBER_EX = "key_number_ex"
 private const val KEY_SCORES = "key_scores"
+private const val REQUEST_DIALOG_CODE_CANCEL = 1
 
 private const val TAG = "PushUpsFragment"
 
 class PushUpsFragment : Fragment() {
 
+    interface Callbacks {
+        fun onPushUpsFragment(numberEx: Int?, minutes: Long?, cal: Float?, mode: Int)
+    }
+
     private lateinit var viewModel: PushUpsVM
     private lateinit var gifWebView: WebView
     private lateinit var scoresTextView: TextView
-    private lateinit var minutesTextView: TextView
     private lateinit var calTextView: TextView
     private lateinit var tapFrameLayout: ViewGroup
+    private lateinit var stopImageButton: ImageButton
+    private lateinit var shadowImageViewActivity: ImageView
+    private lateinit var chronometer: Chronometer
 
+    private var callbacks: Callbacks? = null
     private var nameEx: String = "name_exercise"
     private var numberEx: Int = 0
     private var scores: Int = 0
-    private var minutes: Int = 0
+    private var minutes: Long = 0
     private var cal: Float = 0f
-    private var dbHandler: DatabaseHandler? = null
+    private var chronometerIsActive = false
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +66,6 @@ class PushUpsFragment : Fragment() {
         numberEx = arguments?.getInt(KEY_NUMBER_EX, 0) ?: 0
         log(TAG, "numberEx=$numberEx")
         scores = arguments?.getInt(KEY_SCORES, 0) ?: 404
-        cal = 4f
-        // init DB
-        dbHandler = DatabaseHandler(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,13 +73,16 @@ class PushUpsFragment : Fragment() {
 
         gifWebView  = view.findViewById(R.id.webView2)
         scoresTextView = view.findViewById(R.id.count_scores_textView)
-        minutesTextView = view.findViewById(R.id.count_minutes_textView)
         calTextView = view.findViewById(R.id.count_cal_textView)
         tapFrameLayout = view.findViewById(R.id.tap_frameLayout)
+        stopImageButton = view.findViewById(R.id.stop_imageButton)
+        shadowImageViewActivity = activity?.findViewById(R.id.shadow_imageView)!!
+        chronometer = view.findViewById(R.id.chronometer)
 
         gifWebView.loadUrl("file:///android_asset/otzimania.gif")
         //init viewModel
         viewModel = ViewModelProvider(this).get(PushUpsVM::class.java)
+        // init DB
         viewModel.initDB(requireContext())
 
         return view
@@ -72,7 +90,7 @@ class PushUpsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateUI(scores, 1, 2f)
+        updateUI(scores, 2f)
     }
 
     override fun onStart() {
@@ -87,11 +105,27 @@ class PushUpsFragment : Fragment() {
                 }
                 MotionEvent.ACTION_UP -> {
                     animateView(view, true)
+                    if (!chronometerIsActive) {
+                        chronometer.base = SystemClock.elapsedRealtime()
+                        chronometer.start()
+                        chronometerIsActive = true
+                    }
+                    log(TAG, "time=${SystemClock.elapsedRealtime() - chronometer.base}")
                     if (scores > 0) {
                         scores--
-                        scoresTextView.text = scores.toString()
+                        minutes = SystemClock.elapsedRealtime() - chronometer.base
+                        val calendar = GregorianCalendar.getInstance().apply {
+                            time = Date(minutes)
+                        }
+                        val minute = calendar.get(Calendar.MINUTE)
+                        val second = calendar.get(Calendar.SECOND)
+                        val time: Float = minute + (second / 60f)
+                        log(TAG, "minute=$minute, second=$second, time=$time")
+                        if (scores != 0) cal = round(time / scores.toFloat() * 100) / 100
+                        updateUI(scores, cal)
                         if (scores == 0) {
                             jobWithDB()
+                            callbacks?.onPushUpsFragment(numberEx, minutes, cal, 0)
                         }
                     }
                     view.performClick()
@@ -99,10 +133,59 @@ class PushUpsFragment : Fragment() {
             }
             true
         }
+        stopImageButton.setOnClickListener {
+            shadowImageViewActivity.isVisible = true
+            animateAlpha(shadowImageViewActivity)
+            val dialogFragment = CancelExerciseDialogFragment.newInstance()
+            dialogFragment.setTargetFragment(this, REQUEST_DIALOG_CODE_CANCEL)
+            dialogFragment.show(parentFragmentManager, "CancelExerciseDialogFragment")
+            onPause()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_DIALOG_CODE_CANCEL -> {
+                    jobWithDB()
+                    callbacks?.onPushUpsFragment(null, null, null, 1)
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shadowImageViewActivity.isVisible = false
+        shadowImageViewActivity.alpha = 0f
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        gifWebView.stopLoading()
+        gifWebView.clearCache(true)
+        gifWebView.destroy()
+        gifWebView.clearHistory()
+    }
+
+    private fun animateAlpha(view: View) {
+        val animatorAlpha = ObjectAnimator.ofFloat(
+                view,
+                "alpha",
+                1.0f
+        )
+        animatorAlpha.duration = 500
+        animatorAlpha.start()
     }
 
     private fun jobWithDB() {
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val exercise: Exercise? = viewModel.getExerciseDB(nameEx, numberEx.toString())
             if (exercise != null) {
                 val success = viewModel.updateExerciseDB(nameEx, numberEx.toString(),
@@ -142,9 +225,8 @@ class PushUpsFragment : Fragment() {
         }
     }
 
-    private fun updateUI(scores: Int, minutes: Int, cal: Float) {
+    private fun updateUI(scores: Int, cal: Float) {
         scoresTextView.text = scores.toString()
-        minutesTextView.text = minutes.toString()
         calTextView.text = cal.toString()
     }
 

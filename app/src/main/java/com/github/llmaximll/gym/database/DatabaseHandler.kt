@@ -16,7 +16,7 @@ class DatabaseHandler(context: Context)
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable = "CREATE TABLE $TABLE_NAME " +
                 "($ID INTEGER PRIMARY KEY, $COLUMN_NAME_EX TEXT, $COLUMN_NUMBER_EX TEXT, $COLUMN_SCORES INTEGER, " +
-                "$COLUMN_MINUTES INTEGER, $COLUMN_CAL REAL)"
+                "$COLUMN_MINUTES TEXT, $COLUMN_CAL REAL)"
         log(TAG, "Hello, World!")
         db?.execSQL(createTable)
     }
@@ -35,7 +35,7 @@ class DatabaseHandler(context: Context)
         values.put(COLUMN_NAME_EX, exercise.name)
         values.put(COLUMN_NUMBER_EX, exercise.numberEx)
         values.put(COLUMN_SCORES, exercise.scores)
-        values.put(COLUMN_MINUTES, exercise.minutes)
+        values.put(COLUMN_MINUTES, exercise.minutes.toString())
         values.put(COLUMN_CAL, exercise.cal)
         val success = db.insert(TABLE_NAME, null, values)
         db.close()
@@ -84,7 +84,7 @@ class DatabaseHandler(context: Context)
                     exercise.name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_EX))
                     exercise.numberEx = cursor.getString(cursor.getColumnIndex(COLUMN_NUMBER_EX))
                     exercise.scores = cursor.getInt(cursor.getColumnIndex(COLUMN_SCORES))
-                    exercise.minutes = cursor.getInt(cursor.getColumnIndex(COLUMN_MINUTES))
+                    exercise.minutes = cursor.getString(cursor.getColumnIndex(COLUMN_MINUTES)).toLong()
                     exercise.cal = cursor.getFloat(cursor.getColumnIndex(COLUMN_CAL))
 
                 } while (cursor.moveToNext())
@@ -97,12 +97,12 @@ class DatabaseHandler(context: Context)
         return exercise
     }
 
-    fun updateExercise(nameEx: String, numberEx: String, scores: Int, minutes: Int, cal: Float): Boolean {
+    fun updateExercise(nameEx: String, numberEx: String, scores: Int, minutes: Long, cal: Float): Boolean {
         val db = this.writableDatabase
         val values = ContentValues()
         values.apply {
             put(COLUMN_SCORES, scores)
-            put(COLUMN_MINUTES, minutes)
+            put(COLUMN_MINUTES, minutes.toString())
             put(COLUMN_CAL, cal)
         }
         val selectionArgs = arrayOf(nameEx, numberEx)

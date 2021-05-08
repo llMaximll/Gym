@@ -14,7 +14,9 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity(),
         ProfileFragment.Callbacks,
         PlanFragment.Callbacks,
-        PushUpsChoiceFragment.Callbacks {
+        PushUpsChoiceFragment.Callbacks,
+        PushUpsFragment.Callbacks,
+        SuccessFragment.Callbacks {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -92,6 +94,20 @@ class MainActivity : AppCompatActivity(),
         changeFragment(fragment, true)
     }
 
+    override fun onPushUpsFragment(numberEx: Int?, minutes: Long?, cal: Float?, mode: Int) {
+        when (mode) {
+            0 -> {
+                val fragment = SuccessFragment.newInstance(numberEx!!, minutes!!, cal!!)
+                changeFragment(fragment, false)
+            }
+            1 -> {
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                val fragment = PlanFragment.newInstance()
+                changeFragment(fragment, false)
+            }
+        }
+    }
+
     private fun changeFragment(fragment: Fragment, addToBackStack: Boolean) {
         supportFragmentManager.commit {
             setCustomAnimations(
@@ -105,6 +121,12 @@ class MainActivity : AppCompatActivity(),
             }
             replace(R.id.container_fragment, fragment)
         }
+    }
+
+    override fun onSuccessFragment() {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        val fragment = PlanFragment.newInstance()
+        changeFragment(fragment, false)
     }
 
     private fun log(tag: String, message: String) {

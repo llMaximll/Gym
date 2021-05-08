@@ -197,7 +197,7 @@ class GymRepository {
 
     fun getExerciseDB(nameEx: String, numberEx: String): Exercise? = dbHandler?.getExercise(nameEx, numberEx)
 
-    suspend fun addExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Int, cal: Float): Boolean {
+    suspend fun addExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Long, cal: Float): Boolean {
         val success: Boolean?
         val exercise = Exercise()
         exercise.name = nameEx
@@ -211,7 +211,7 @@ class GymRepository {
         return success
     }
 
-    fun updateExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Int, cal: Float) =
+    fun updateExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Long, cal: Float) =
             dbHandler!!.updateExercise(nameEx, numberEx.toString(), scores, minutes, cal)
 
     private fun log(tag: String, message: String) {
