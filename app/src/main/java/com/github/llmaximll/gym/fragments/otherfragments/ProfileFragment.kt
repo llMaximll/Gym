@@ -68,7 +68,7 @@ class ProfileFragment : Fragment() {
 
         weightTextView = view.findViewById(R.id.count_scores_textView)
         heightTextView = view.findViewById(R.id.count_minutes_textView)
-        nameTextView = view.findViewById(R.id.pushUps_textView)
+        nameTextView = view.findViewById(R.id.title_textView)
         genderTextView = view.findViewById(R.id.minutes_textView)
         signOutImageButton = view.findViewById(R.id.stop_imageButton)
         biometricTextView = view.findViewById(R.id.biometric_textView)

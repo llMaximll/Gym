@@ -9,10 +9,12 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.llmaximll.gym.BuildConfig
 import com.github.llmaximll.gym.R
+import com.github.llmaximll.gym.vm.PushUpsChoiceVM
 
 private const val TAG = "PushUpsChoiceFragment"
 private const val KEY_CATEGORY = "key_category"
@@ -20,15 +22,16 @@ private const val KEY_CATEGORY = "key_category"
 class PushUpsChoiceFragment : Fragment() {
 
     interface Callbacks {
-        fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int)
+        fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int, isRepetition: Boolean)
     }
     
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var progressTextView: TextView
     private lateinit var category: String
+    private lateinit var viewModel: PushUpsChoiceVM
 
-    private val countCompItems = 11
+    private var countCompItems = 0
 
     private var callbacks: Callbacks? = null
     private var adapter: StepAdapter = StepAdapter()
@@ -55,9 +58,7 @@ class PushUpsChoiceFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
-        progress = (countCompItems * 100 / 60).toFloat()
-        progressBar.progress = progress.toInt()
-        progressTextView.text = progress.toString() + "%"
+        initVM()
 
         return view
     }
@@ -70,6 +71,15 @@ class PushUpsChoiceFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         callbacks = null
+    }
+
+    private fun initVM() {
+        viewModel = ViewModelProvider(this).get(PushUpsChoiceVM::class.java)
+        viewModel.initDB(requireContext())
+        countCompItems = viewModel.getCompletedExercises()
+        progress = (countCompItems * 100 / 60).toFloat()
+        progressBar.progress = progress.toInt()
+        progressTextView.text = progress.toString() + "%"
     }
 
     private fun TextView.setCountItem(countItem: Int) {
@@ -96,7 +106,8 @@ class PushUpsChoiceFragment : Fragment() {
                     MotionEvent.ACTION_UP -> {
                         animateView(this, true)
                         log(TAG, "countItem=$countItem")
-                        callbacks?.onPushUpsChoiceFragment(category, countItem, countItem)
+                        val isRepetition = countItem < countCompItems + 1
+                        callbacks?.onPushUpsChoiceFragment(category, countItem, countItem, isRepetition)
                         this.performClick()
                     }
                 }

@@ -88,8 +88,8 @@ class MainActivity : AppCompatActivity(),
         changeFragment(fragment, true)
     }
 
-    override fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int) {
-        val fragment = PushUpsFragment.newInstance(nameEx, numberEx, scores)
+    override fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int, isRepetition: Boolean) {
+        val fragment = PushUpsFragment.newInstance(nameEx, numberEx, scores, isRepetition)
         log(TAG, "scores=$scores")
         changeFragment(fragment, true)
     }

@@ -84,6 +84,7 @@ class PlanFragment : Fragment() {
                 }
                 MotionEvent.ACTION_UP -> {
                     animateView(view, true)
+                    callbacks?.onPlanFragment("torso")
                     view.performClick()
                 }
             }

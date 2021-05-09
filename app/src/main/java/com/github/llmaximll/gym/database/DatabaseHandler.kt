@@ -17,7 +17,6 @@ class DatabaseHandler(context: Context)
         val createTable = "CREATE TABLE $TABLE_NAME " +
                 "($ID INTEGER PRIMARY KEY, $COLUMN_NAME_EX TEXT, $COLUMN_NUMBER_EX TEXT, $COLUMN_SCORES INTEGER, " +
                 "$COLUMN_MINUTES TEXT, $COLUMN_CAL REAL)"
-        log(TAG, "Hello, World!")
         db?.execSQL(createTable)
     }
 
@@ -95,6 +94,28 @@ class DatabaseHandler(context: Context)
         db.close()
 
         return exercise
+    }
+
+    fun getCompletedExercises(): Int {
+        var count = 0
+        val db = readableDatabase
+        val selectionArgs = arrayOf("0")
+        val cursor = db.query(TABLE_NAME, null, "$COLUMN_SCORES = ?", selectionArgs, null, null, null)
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    count++
+                } while (cursor.moveToNext())
+            }
+        }
+
+        cursor.close()
+        db.close()
+
+        log(TAG, "count=$count")
+
+        return count
     }
 
     fun updateExercise(nameEx: String, numberEx: String, scores: Int, minutes: Long, cal: Float): Boolean {

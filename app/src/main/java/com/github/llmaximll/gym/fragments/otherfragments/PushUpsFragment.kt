@@ -21,13 +21,16 @@ import com.github.llmaximll.gym.vm.PushUpsVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.round
 
 private const val KEY_NAME_EX = "key_name_ex"
 private const val KEY_NUMBER_EX = "key_number_ex"
 private const val KEY_SCORES = "key_scores"
+private const val KEY_REPETITION = "key_repetition"
 private const val REQUEST_DIALOG_CODE_CANCEL = 1
+private const val REQUEST_DIALOG_CODE_CONTINUE = 2
 
 private const val TAG = "PushUpsFragment"
 
@@ -53,6 +56,9 @@ class PushUpsFragment : Fragment() {
     private var minutes: Long = 0
     private var cal: Float = 0f
     private var chronometerIsActive = false
+    private var exerciseDB: Exercise? = null
+    private var isContinued = false
+    private var isRepetition = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -64,8 +70,8 @@ class PushUpsFragment : Fragment() {
         // arguments
         nameEx = arguments?.getString(KEY_NAME_EX, "name_ex") ?: "name_ex"
         numberEx = arguments?.getInt(KEY_NUMBER_EX, 0) ?: 0
-        log(TAG, "numberEx=$numberEx")
         scores = arguments?.getInt(KEY_SCORES, 0) ?: 404
+        isRepetition = arguments?.getBoolean(KEY_REPETITION, false) ?: false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -80,17 +86,24 @@ class PushUpsFragment : Fragment() {
         chronometer = view.findViewById(R.id.chronometer)
 
         gifWebView.loadUrl("file:///android_asset/otzimania.gif")
-        //init viewModel
-        viewModel = ViewModelProvider(this).get(PushUpsVM::class.java)
-        // init DB
-        viewModel.initDB(requireContext())
+
+        initDB()
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateUI(scores, 2f)
+        updateUI(scores, cal)
+    }
+
+    private fun initDB() {
+        viewModel = ViewModelProvider(this).get(PushUpsVM::class.java)
+        CoroutineScope(Dispatchers.Default).launch {
+            viewModel.initDB(requireContext())
+            exerciseDB = viewModel.getExerciseDB(nameEx, numberEx.toString())
+            createDialog()
+        }
     }
 
     override fun onStart() {
@@ -105,7 +118,7 @@ class PushUpsFragment : Fragment() {
                 }
                 MotionEvent.ACTION_UP -> {
                     animateView(view, true)
-                    if (!chronometerIsActive) {
+                    if (!chronometerIsActive && !isContinued) {
                         chronometer.base = SystemClock.elapsedRealtime()
                         chronometer.start()
                         chronometerIsActive = true
@@ -124,7 +137,7 @@ class PushUpsFragment : Fragment() {
                         if (scores != 0) cal = round(time / scores.toFloat() * 100) / 100
                         updateUI(scores, cal)
                         if (scores == 0) {
-                            jobWithDB()
+                            if (!isRepetition) jobWithDB()
                             callbacks?.onPushUpsFragment(numberEx, minutes, cal, 0)
                         }
                     }
@@ -134,9 +147,10 @@ class PushUpsFragment : Fragment() {
             true
         }
         stopImageButton.setOnClickListener {
+            minutes = SystemClock.elapsedRealtime() - chronometer.base
             shadowImageViewActivity.isVisible = true
             animateAlpha(shadowImageViewActivity)
-            val dialogFragment = CancelExerciseDialogFragment.newInstance()
+            val dialogFragment = CancelExerciseDialogFragment.newInstance(isRepetition)
             dialogFragment.setTargetFragment(this, REQUEST_DIALOG_CODE_CANCEL)
             dialogFragment.show(parentFragmentManager, "CancelExerciseDialogFragment")
             onPause()
@@ -148,8 +162,16 @@ class PushUpsFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_DIALOG_CODE_CANCEL -> {
-                    jobWithDB()
+                    log(TAG, "onActivityResult | REQUEST_DIALOG_CODE_CANCEL")
+                    if (!isRepetition) jobWithDB()
                     callbacks?.onPushUpsFragment(null, null, null, 1)
+                }
+                REQUEST_DIALOG_CODE_CONTINUE -> {
+                    log(TAG, "onActivityResult | REQUEST_DIALOG_CODE_CONTINUE")
+                    val bool = data?.getBooleanExtra(ResettingExercisesDialogFragment.TAG_RESET_EXERCISES_RESULT, false)
+                    if (bool == true) {
+                        continueExercise()
+                    }
                 }
             }
         }
@@ -166,12 +188,29 @@ class PushUpsFragment : Fragment() {
         callbacks = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        gifWebView.stopLoading()
-        gifWebView.clearCache(true)
-        gifWebView.destroy()
-        gifWebView.clearHistory()
+    private suspend fun createDialog() {
+        if (exerciseDB != null && exerciseDB?.scores != 0) {
+            withContext(Dispatchers.Main) {
+                shadowImageViewActivity.isVisible = true
+                animateAlpha(shadowImageViewActivity)
+                val dialogFragment = ResettingExercisesDialogFragment.newInstance()
+                dialogFragment.setTargetFragment(this@PushUpsFragment, REQUEST_DIALOG_CODE_CANCEL)
+                dialogFragment.show(parentFragmentManager, "ResettingExercisesDialogFragment")
+                onPause()
+            }
+        } else {
+            log(TAG, "initDB | exerciseDB = ${exerciseDB?.scores}")
+        }
+    }
+
+    private fun continueExercise() {
+        scores = exerciseDB?.scores ?: 0
+        minutes = exerciseDB?.minutes ?: 0
+        cal = exerciseDB?.cal ?: 0f
+        updateUI(scores, cal)
+        chronometer.base = SystemClock.elapsedRealtime() - minutes
+        chronometer.start()
+        isContinued = true
     }
 
     private fun animateAlpha(view: View) {
@@ -243,11 +282,12 @@ class PushUpsFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(nameEx: String, numberEx: Int, scores: Int): PushUpsFragment {
+        fun newInstance(nameEx: String, numberEx: Int, scores: Int, isRepetition: Boolean): PushUpsFragment {
             val args = Bundle().apply {
                 putString(KEY_NAME_EX, nameEx)
                 putInt(KEY_NUMBER_EX, numberEx)
                 putInt(KEY_SCORES, scores)
+                putBoolean(KEY_REPETITION, isRepetition)
             }
             return PushUpsFragment().apply {
                 arguments = args
