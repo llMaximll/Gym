@@ -30,6 +30,7 @@ class PushUpsChoiceFragment : Fragment() {
     private lateinit var progressTextView: TextView
     private lateinit var category: String
     private lateinit var viewModel: PushUpsChoiceVM
+    private lateinit var titleTextView: TextView
 
     private var countCompItems = 0
 
@@ -54,6 +55,7 @@ class PushUpsChoiceFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         progressBar = view.findViewById(R.id.progressBar)
         progressTextView = view.findViewById(R.id.progress_textView)
+        titleTextView = view.findViewById(R.id.title_textView)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -61,6 +63,11 @@ class PushUpsChoiceFragment : Fragment() {
         initVM()
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        updateUI(category)
     }
 
     override fun onResume() {
@@ -76,7 +83,7 @@ class PushUpsChoiceFragment : Fragment() {
     private fun initVM() {
         viewModel = ViewModelProvider(this).get(PushUpsChoiceVM::class.java)
         viewModel.initDB(requireContext())
-        countCompItems = viewModel.getCompletedExercises()
+        countCompItems = viewModel.getCompletedExercises(category)
         progress = (countCompItems * 100 / 60).toFloat()
         progressBar.progress = progress.toInt()
         progressTextView.text = progress.toString() + "%"
@@ -143,6 +150,12 @@ class PushUpsChoiceFragment : Fragment() {
                 duration = 150
                 start()
             }
+        }
+    }
+
+    private fun updateUI(category: String) {
+        when (category) {
+            "torso" -> titleTextView.text = "Sit ups"
         }
     }
 

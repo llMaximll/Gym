@@ -197,7 +197,7 @@ class GymRepository {
 
     fun getExerciseDB(nameEx: String, numberEx: String): Exercise? = dbHandler?.getExercise(nameEx, numberEx)
 
-    fun getCompletedExercises(): Int = dbHandler!!.getCompletedExercises()
+    fun getCompletedExercises(category: String): Int = dbHandler!!.getCompletedExercises(category)
 
     suspend fun addExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Long, cal: Float): Boolean {
         val success: Boolean?

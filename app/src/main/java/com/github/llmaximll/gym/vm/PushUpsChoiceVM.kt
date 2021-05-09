@@ -9,5 +9,5 @@ class PushUpsChoiceVM : ViewModel() {
 
     fun initDB(context: Context) = repository.initDBHandler(context)
 
-    fun getCompletedExercises(): Int = repository.getCompletedExercises()
+    fun getCompletedExercises(category: String): Int = repository.getCompletedExercises(category)
 }

@@ -96,11 +96,12 @@ class DatabaseHandler(context: Context)
         return exercise
     }
 
-    fun getCompletedExercises(): Int {
+    fun getCompletedExercises(category: String): Int {
         var count = 0
         val db = readableDatabase
-        val selectionArgs = arrayOf("0")
-        val cursor = db.query(TABLE_NAME, null, "$COLUMN_SCORES = ?", selectionArgs, null, null, null)
+        val selectionArgs = arrayOf(category, "0")
+        val cursor = db.query(TABLE_NAME, null, "$COLUMN_NAME_EX = ? AND $COLUMN_SCORES = ?",
+                selectionArgs, null, null, null)
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

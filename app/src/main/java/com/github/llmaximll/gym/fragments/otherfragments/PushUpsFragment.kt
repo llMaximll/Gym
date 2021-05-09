@@ -85,8 +85,6 @@ class PushUpsFragment : Fragment() {
         shadowImageViewActivity = activity?.findViewById(R.id.shadow_imageView)!!
         chronometer = view.findViewById(R.id.chronometer)
 
-        gifWebView.loadUrl("file:///android_asset/otzimania.gif")
-
         initDB()
 
         return view
@@ -267,6 +265,10 @@ class PushUpsFragment : Fragment() {
     private fun updateUI(scores: Int, cal: Float) {
         scoresTextView.text = scores.toString()
         calTextView.text = cal.toString()
+        when (nameEx) {
+            "hands" -> gifWebView.loadUrl("file:///android_asset/otzimania.gif")
+            "torso" -> gifWebView.loadUrl("file:///android_asset/sit_ups.gif")
+        }
     }
 
     private fun toast(message: String) {
