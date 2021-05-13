@@ -146,6 +146,7 @@
                         android:textColor="#729ED3"/>
 
                     <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/notifications_switch"
                         android:theme="@style/ColorSwitchStyle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

@@ -11,9 +11,7 @@ import com.github.llmaximll.gym.dataclasses.Images
 import com.github.llmaximll.gym.dataclasses.Lessons
 import com.github.llmaximll.gym.dataclasses.Profile
 import com.github.llmaximll.gym.network.NetworkService
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call

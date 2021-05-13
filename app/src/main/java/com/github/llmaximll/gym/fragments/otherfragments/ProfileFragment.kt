@@ -14,6 +14,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,7 @@ private const val REQUEST_DIALOG_CODE_START_DIALOG = 2
 private const val SP_HEIGHT = "sp_height"
 private const val SP_WEIGHT = "sp_weight"
 private const val SP_GENDER = "sp_gender"
+private const val SP_NOTIFICATIONS  ="sp_notifications"
 
 class ProfileFragment : Fragment() {
 
@@ -48,8 +50,10 @@ class ProfileFragment : Fragment() {
     private lateinit var shadowImageViewActivity: ImageView
     private lateinit var dialogTextView: TextView
     private lateinit var policyTextView: TextView
+    private lateinit var notificationsSwitch: SwitchCompat
 
     private var callbacks: Callbacks? = null
+    private var notifications: Boolean = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -61,6 +65,7 @@ class ProfileFragment : Fragment() {
         val sharedPreference =
                 context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
         username = sharedPreference?.getString(SP_USERNAME, "null-username")!!
+        notifications = sharedPreference.getBoolean(SP_NOTIFICATIONS, false)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,11 +80,14 @@ class ProfileFragment : Fragment() {
         shadowImageViewActivity = activity?.findViewById(R.id.shadow_imageView)!!
         dialogTextView = view.findViewById(R.id.dialog_textView)
         policyTextView = view.findViewById(R.id.policy_textView)
+        notificationsSwitch = view.findViewById(R.id.notifications_switch)
 
         initObservers()
         val sharedPreference =
                 context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
         viewModel.getProfile(sharedPreference?.getInt(SP_TOKEN, 0).toString())
+
+        notificationsSwitch.isChecked = notifications
 
         val gender = sharedPreference?.getInt(SP_GENDER, 0)
         genderTextView.text = if (gender == 1) "Male" else "Female"
@@ -110,6 +118,26 @@ class ProfileFragment : Fragment() {
         }
         signOutImageButton.setOnClickListener {
             viewModel.signOut(username)
+        }
+        notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val sharedPreference =
+                    context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+            if (isChecked) {
+                val result = viewModel.setAlarmManager(requireContext())
+                if (result) {
+                    val editor = sharedPreference?.edit()
+                    editor?.putBoolean(SP_NOTIFICATIONS, true)
+                    editor?.apply()
+                    toast("Уведомления включены")
+                } else
+                    toast("Не удалось включить уведомления")
+            } else {
+                val result = viewModel.stopAlarmManager()
+                val editor = sharedPreference?.edit()
+                editor?.putBoolean(SP_NOTIFICATIONS, false)
+                editor?.apply()
+                if (result) toast("Уведомления выключены")
+            }
         }
     }
 
