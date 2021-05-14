@@ -57,7 +57,7 @@ class LaunchActivity : AppCompatActivity(),
         val editor = sharedPreference.edit()
         editor.putBoolean(FIRST_LAUNCH, true)
         editor.apply()
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, LogInActivity::class.java)
         startActivity(intent)
         finish()
     }

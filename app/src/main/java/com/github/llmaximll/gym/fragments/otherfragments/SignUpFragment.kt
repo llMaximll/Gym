@@ -44,7 +44,7 @@ class SignUpFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = layoutInflater.inflate(R.layout.fragment_sign_up, container, false)
 
-        nameEditText = view.findViewById(R.id.name_textView)
+        nameEditText = view.findViewById(R.id.title_textView)
         mailEditText = view.findViewById(R.id.mail_editText)
         password1EditText = view.findViewById(R.id.password_1_textView)
         password2EditText = view.findViewById(R.id.password_2_textView)

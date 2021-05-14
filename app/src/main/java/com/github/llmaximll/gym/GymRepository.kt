@@ -1,13 +1,18 @@
 package com.github.llmaximll.gym
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.github.llmaximll.gym.database.DatabaseHandler
+import com.github.llmaximll.gym.dataclasses.Exercise
 import com.github.llmaximll.gym.dataclasses.Images
 import com.github.llmaximll.gym.dataclasses.Lessons
 import com.github.llmaximll.gym.dataclasses.Profile
 import com.github.llmaximll.gym.network.NetworkService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,6 +22,12 @@ import java.io.IOException
 private const val TAG = "Repository"
 
 class GymRepository {
+
+    private var dbHandler: DatabaseHandler? = null
+
+    fun initDBHandler(context: Context) {
+        dbHandler = DatabaseHandler(context)
+    }
 
     fun signIn(username: String, password: String, cosmeticView: CosmeticView): Map<String, Map<String, Int>>? {
         var data: Map<String, Map<String, Int>>? = mapOf()
@@ -181,6 +192,27 @@ class GymRepository {
                     }
                 })
     }
+
+    fun getExerciseDB(nameEx: String, numberEx: String): Exercise? = dbHandler?.getExercise(nameEx, numberEx)
+
+    fun getCompletedExercises(category: String): Int = dbHandler!!.getCompletedExercises(category)
+
+    suspend fun addExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Long, cal: Float): Boolean {
+        val success: Boolean?
+        val exercise = Exercise()
+        exercise.name = nameEx
+        exercise.numberEx = numberEx
+        exercise.scores = scores
+        exercise.minutes = minutes
+        exercise.cal = cal
+
+        success = withContext(Dispatchers.IO) { dbHandler!!.addExercise(exercise) }
+
+        return success
+    }
+
+    fun updateExerciseDB(nameEx: String, numberEx: String, scores: Int, minutes: Long, cal: Float) =
+            dbHandler!!.updateExercise(nameEx, numberEx, scores, minutes, cal)
 
     private fun log(tag: String, message: String) {
         if (BuildConfig.DEBUG) {

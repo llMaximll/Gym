@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/name_textView"
+            android:id="@+id/title_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/count_weight_textView"
+            android:id="@+id/count_scores_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
@@ -36,7 +36,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name_textView" />
+            app:layout_constraintTop_toBottomOf="@id/title_textView" />
 
         <TextView
             android:id="@+id/count_cal_textView"
@@ -45,13 +45,13 @@
             android:layout_marginTop="16dp"
             android:text="0"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toStartOf="@+id/count_height_textView"
+            app:layout_constraintEnd_toStartOf="@+id/count_minutes_textView"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/count_weight_textView"
-            app:layout_constraintTop_toBottomOf="@id/name_textView" />
+            app:layout_constraintStart_toEndOf="@+id/count_scores_textView"
+            app:layout_constraintTop_toBottomOf="@id/title_textView" />
 
         <TextView
-            android:id="@+id/count_height_textView"
+            android:id="@+id/count_minutes_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -61,46 +61,46 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/count_cal_textView"
-            app:layout_constraintTop_toBottomOf="@id/name_textView" />
+            app:layout_constraintTop_toBottomOf="@id/title_textView" />
 
         <TextView
-            android:id="@+id/weight_textView"
+            android:id="@+id/scores_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="Training"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/count_weight_textView"
+            app:layout_constraintEnd_toEndOf="@+id/count_scores_textView"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@id/count_weight_textView"
-            app:layout_constraintTop_toBottomOf="@id/count_weight_textView" />
+            app:layout_constraintStart_toStartOf="@id/count_scores_textView"
+            app:layout_constraintTop_toBottomOf="@id/count_scores_textView" />
 
         <TextView
-            android:id="@+id/gender_textView"
+            android:id="@+id/minutes_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="Kcal"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/count_cal_textView"
+            app:layout_constraintEnd_toEndOf="@+id/count_minutes_textView"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/count_cal_textView"
-            app:layout_constraintTop_toBottomOf="@id/count_cal_textView" />
+            app:layout_constraintStart_toStartOf="@+id/count_minutes_textView"
+            app:layout_constraintTop_toBottomOf="@id/count_minutes_textView" />
 
         <TextView
-            android:id="@+id/height_textView"
+            android:id="@+id/cal_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="Minutes"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/count_height_textView"
+            app:layout_constraintEnd_toEndOf="@id/count_cal_textView"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/count_height_textView"
-            app:layout_constraintTop_toBottomOf="@id/count_height_textView" />
+            app:layout_constraintStart_toStartOf="@+id/count_cal_textView"
+            app:layout_constraintTop_toBottomOf="@id/count_cal_textView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -116,6 +116,7 @@
             android:orientation="vertical">
 
             <FrameLayout
+                android:id="@+id/hands_frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">
@@ -140,6 +141,7 @@
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/spine_frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">
@@ -164,6 +166,7 @@
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/torso_frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">
@@ -188,6 +191,7 @@
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/legs_frameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">

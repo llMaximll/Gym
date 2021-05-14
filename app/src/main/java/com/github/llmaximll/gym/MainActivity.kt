@@ -1,7 +1,10 @@
 package com.github.llmaximll.gym
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.github.llmaximll.gym.fragments.otherfragments.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -9,7 +12,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(),
-        ProfileFragment.Callbacks {
+        ProfileFragment.Callbacks,
+        PlanFragment.Callbacks,
+        PushUpsChoiceFragment.Callbacks,
+        PushUpsFragment.Callbacks,
+        SuccessFragment.Callbacks {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -34,11 +41,26 @@ class MainActivity : AppCompatActivity(),
     private fun setBottomNavigationView() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             val fragment = when (item.itemId) {
-                R.id.plan -> PlanFragment.newInstance()
-                R.id.lessons -> LessonsFragment.newInstance()
-                R.id.reports -> ReportsFragment.newInstance()
-                R.id.profile -> ProfileFragment.newInstance()
-                else -> PlanFragment.newInstance()
+                R.id.plan -> {
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    PlanFragment.newInstance()
+                }
+                R.id.lessons -> {
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    LessonsFragment.newInstance()
+                }
+                R.id.reports -> {
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    ReportsFragment.newInstance()
+                }
+                R.id.profile -> {
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    ProfileFragment.newInstance()
+                }
+                else -> {
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    PlanFragment.newInstance()
+                }
             }
             supportFragmentManager.commit {
                 replace(R.id.container_fragment, fragment)
@@ -58,15 +80,58 @@ class MainActivity : AppCompatActivity(),
 
     override fun onProfileFragment() {
         val fragment = WebPolicyFragment.newInstance()
+        changeFragment(fragment, true)
+    }
+
+    override fun onPlanFragment(category: String) {
+        val fragment = PushUpsChoiceFragment.newInstance(category)
+        changeFragment(fragment, true)
+    }
+
+    override fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int, isRepetition: Boolean) {
+        val fragment = PushUpsFragment.newInstance(nameEx, numberEx, scores, isRepetition)
+        log(TAG, "scores=$scores")
+        changeFragment(fragment, true)
+    }
+
+    override fun onPushUpsFragment(numberEx: Int?, minutes: Long?, cal: Float?, mode: Int) {
+        when (mode) {
+            0 -> {
+                val fragment = SuccessFragment.newInstance(numberEx!!, minutes!!, cal!!)
+                changeFragment(fragment, false)
+            }
+            1 -> {
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                val fragment = PlanFragment.newInstance()
+                changeFragment(fragment, false)
+            }
+        }
+    }
+
+    private fun changeFragment(fragment: Fragment, addToBackStack: Boolean) {
         supportFragmentManager.commit {
             setCustomAnimations(
-                    android.R.anim.slide_in_left,
-                    android.R.anim.slide_out_right,
-                    android.R.anim.slide_in_left,
-                    android.R.anim.slide_out_right,
+                    android.R.animator.fade_in,
+                    android.R.anim.fade_out,
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
             )
-            addToBackStack(null)
+            if (addToBackStack) {
+                addToBackStack(null)
+            }
             replace(R.id.container_fragment, fragment)
+        }
+    }
+
+    override fun onSuccessFragment() {
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        val fragment = PlanFragment.newInstance()
+        changeFragment(fragment, false)
+    }
+
+    private fun log(tag: String, message: String) {
+        if (BuildConfig.DEBUG) {
+            Log.i(tag, message)
         }
     }
 }

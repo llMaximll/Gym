@@ -23,6 +23,14 @@ class WebPolicyFragment : Fragment() {
         return view
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        webView.stopLoading()
+        webView.clearCache(true)
+        webView.destroy()
+        webView.clearHistory()
+    }
+
     companion object {
         fun newInstance(): WebPolicyFragment = WebPolicyFragment()
     }
