@@ -37,11 +37,11 @@ class ProfileVM : ViewModel() {
         return true
     }
 
-    fun stopAlarmManager(): Boolean {
+    fun stopAlarmManager(context: Context): Boolean {
         if (myReceiver == null) {
             myReceiver = Receiver()
         }
-        myReceiver!!.stopAlarmManager()
+        myReceiver!!.stopAlarmManager(context)
         return true
     }
 }

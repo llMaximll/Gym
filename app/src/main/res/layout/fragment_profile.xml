@@ -116,7 +116,7 @@
                         android:textColor="#729ED3"/>
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/rest_time_textView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"

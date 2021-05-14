@@ -53,7 +53,12 @@ class Receiver : BroadcastReceiver() {
         }
     }
 
-    fun stopAlarmManager() {
+    fun stopAlarmManager(context: Context) {
+        if (pendingIntent == null) {
+            val intent = Intent(context, Receiver::class.java)
+            intent.action = AM_INTENT_ACTION
+            pendingIntent = PendingIntent.getBroadcast(context, AM_REQUEST_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        }
         alarmManager?.cancel(pendingIntent)
     }
 

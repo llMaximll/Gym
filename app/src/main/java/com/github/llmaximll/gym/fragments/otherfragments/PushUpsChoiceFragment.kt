@@ -15,9 +15,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.llmaximll.gym.BuildConfig
 import com.github.llmaximll.gym.R
 import com.github.llmaximll.gym.vm.PushUpsChoiceVM
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "PushUpsChoiceFragment"
 private const val KEY_CATEGORY = "key_category"
+private const val NAME_SHARED_PREFERENCES = "shared_preferences"
+private const val SP_TIMEOUT = "sp_timeout"
+private const val SP_TIMEOUT_COUNT = "sp_timeout_count"
 
 class PushUpsChoiceFragment : Fragment() {
 
@@ -102,7 +107,11 @@ class PushUpsChoiceFragment : Fragment() {
 
     private fun View.setListeners(countItem: Int) {
         if (countItem < countCompItems + 2) {
-            this.setOnTouchListener { view, motionEvent ->
+            val sharedPreference =
+                    context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+            val timeoutCount = sharedPreference?.getLong(SP_TIMEOUT_COUNT, TimeUnit.SECONDS.toMillis(30)) as Long
+            val timeout = sharedPreference.getLong(SP_TIMEOUT, 0L)
+            this.setOnTouchListener { _, motionEvent ->
                 when (motionEvent.action) {
                     MotionEvent.ACTION_DOWN -> {
                         animateView(this, false)
@@ -112,9 +121,20 @@ class PushUpsChoiceFragment : Fragment() {
                     }
                     MotionEvent.ACTION_UP -> {
                         animateView(this, true)
-                        log(TAG, "countItem=$countItem")
-                        val isRepetition = countItem < countCompItems + 1
-                        callbacks?.onPushUpsChoiceFragment(category, countItem, countItem, isRepetition)
+                        if (System.currentTimeMillis() > timeout + timeoutCount) {
+                            log(TAG, "countItem=$countItem")
+                            val isRepetition = countItem < countCompItems + 1
+                            callbacks?.onPushUpsChoiceFragment(category, countItem, countItem, isRepetition)
+                            log(TAG, "currentTime=${System.currentTimeMillis()} | " +
+                                    "timeout+timeoutCount=${timeout + timeoutCount}")
+                        } else {
+                            val calendar = GregorianCalendar.getInstance()
+                            calendar.time = Date(timeout + timeoutCount - System.currentTimeMillis())
+                            toast("До завершения перерыва осталось: ${calendar.get(Calendar.MINUTE)}:" +
+                                    "${calendar.get(Calendar.SECOND)}")
+                            log(TAG, "currentTime=${System.currentTimeMillis()} | " +
+                                    "timeout+timeoutCount=${timeout + timeoutCount}")
+                        }
                         this.performClick()
                     }
                 }

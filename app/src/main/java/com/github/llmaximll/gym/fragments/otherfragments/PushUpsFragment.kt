@@ -31,6 +31,8 @@ private const val KEY_SCORES = "key_scores"
 private const val KEY_REPETITION = "key_repetition"
 private const val REQUEST_DIALOG_CODE_CANCEL = 1
 private const val REQUEST_DIALOG_CODE_CONTINUE = 2
+private const val NAME_SHARED_PREFERENCES = "shared_preferences"
+private const val SP_TIMEOUT = "sp_timeout"
 
 private const val TAG = "PushUpsFragment"
 
@@ -136,6 +138,11 @@ class PushUpsFragment : Fragment() {
                         updateUI(scores, cal)
                         if (scores == 0) {
                             if (!isRepetition) jobWithDB()
+                            val sharedPreference =
+                                    context?.getSharedPreferences(NAME_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+                            val editor = sharedPreference?.edit()
+                            editor?.putLong(SP_TIMEOUT, System.currentTimeMillis())
+                            editor?.apply()
                             callbacks?.onPushUpsFragment(numberEx, minutes, cal, 0)
                         }
                     }
