@@ -2,6 +2,7 @@ package com.github.llmaximll.gym.fragments.otherfragments
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -269,9 +270,14 @@ class PushUpsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun updateUI(scores: Int, cal: Float) {
         scoresTextView.text = scores.toString()
         calTextView.text = cal.toString()
+        gifWebView.scrollTo(0, 500)
+        gifWebView.setOnTouchListener { view, motionEvent ->
+            true
+        }
         when (nameEx) {
             "hands" -> gifWebView.loadUrl("file:///android_asset/otzimania.gif")
             "torso" -> gifWebView.loadUrl("file:///android_asset/sit_ups.gif")
