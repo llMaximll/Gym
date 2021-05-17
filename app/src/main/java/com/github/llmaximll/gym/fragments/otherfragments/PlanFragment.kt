@@ -69,6 +69,7 @@ class PlanFragment : Fragment() {
                 }
                 MotionEvent.ACTION_UP -> {
                     animateView(view, true)
+                    callbacks?.onPlanFragment("spine")
                     view.performClick()
                 }
             }

@@ -176,6 +176,7 @@ class PushUpsChoiceFragment : Fragment() {
     private fun updateUI(category: String) {
         when (category) {
             "torso" -> titleTextView.text = "Sit ups"
+            "spine" -> titleTextView.text = "Trunk inclinations"
         }
     }
 

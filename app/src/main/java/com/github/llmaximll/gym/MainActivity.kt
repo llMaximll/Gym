@@ -89,8 +89,12 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onPushUpsChoiceFragment(nameEx: String, numberEx: Int, scores: Int, isRepetition: Boolean) {
-        val fragment = PushUpsFragment.newInstance(nameEx, numberEx, scores, isRepetition)
-        log(TAG, "scores=$scores")
+        val fragment = when (nameEx) {
+            "hands" -> PushUpsFragment.newInstance(nameEx, numberEx, scores, isRepetition)
+            "torso" -> PushUpsFragment.newInstance(nameEx, numberEx, scores, isRepetition)
+            "spine" -> TrunkInclinationsFragment.newInstance(nameEx, numberEx, scores, isRepetition)
+            else -> PushUpsFragment.newInstance(nameEx, numberEx, scores, isRepetition)
+        }
         changeFragment(fragment, true)
     }
 
