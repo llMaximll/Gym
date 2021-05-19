@@ -16,7 +16,8 @@ class MainActivity : AppCompatActivity(),
         PlanFragment.Callbacks,
         PushUpsChoiceFragment.Callbacks,
         PushUpsFragment.Callbacks,
-        SuccessFragment.Callbacks {
+        SuccessFragment.Callbacks,
+        TrunkInclinationsFragment.Callbacks {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -99,6 +100,20 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onPushUpsFragment(numberEx: Int?, minutes: Long?, cal: Float?, mode: Int) {
+        when (mode) {
+            0 -> {
+                val fragment = SuccessFragment.newInstance(numberEx!!, minutes!!, cal!!)
+                changeFragment(fragment, false)
+            }
+            1 -> {
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                val fragment = PlanFragment.newInstance()
+                changeFragment(fragment, false)
+            }
+        }
+    }
+
+    override fun onTrunkInclinationsFragment(numberEx: Int?, minutes: Long?, cal: Float?, mode: Int) {
         when (mode) {
             0 -> {
                 val fragment = SuccessFragment.newInstance(numberEx!!, minutes!!, cal!!)

@@ -275,9 +275,6 @@ class PushUpsFragment : Fragment() {
         scoresTextView.text = scores.toString()
         calTextView.text = cal.toString()
         gifWebView.scrollTo(0, 500)
-        gifWebView.setOnTouchListener { view, motionEvent ->
-            true
-        }
         when (nameEx) {
             "hands" -> gifWebView.loadUrl("file:///android_asset/otzimania.gif")
             "torso" -> gifWebView.loadUrl("file:///android_asset/sit_ups.gif")
