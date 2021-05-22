@@ -3,4 +3,10 @@
     <declare-styleable name="TrunkInclinationsView">
         <attr name="arrowAngle" format="float"/>
     </declare-styleable>
+    <declare-styleable name="ChartScaleNumbersView">
+        <attr name="mode" format="enum">
+            <enum name="Training" value="0"/>
+            <enum name="Minutes" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

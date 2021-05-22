@@ -7,6 +7,7 @@ import android.view.View
 
 class TrunkInclinationsView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
+    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private var baseColor = Color.parseColor("#FF77A1D3")
@@ -52,7 +53,6 @@ class TrunkInclinationsView(context: Context, attrs: AttributeSet) : View(contex
     }
 
     private fun drawText(canvas: Canvas?) {
-        val textPaint = Paint()
         textPaint.apply {
             isAntiAlias = true
             color = Color.parseColor("#FF77A1D3")
@@ -75,7 +75,6 @@ class TrunkInclinationsView(context: Context, attrs: AttributeSet) : View(contex
         canvas?.drawLine(sizeX * 0.5f, sizeY * 0.14f, sizeX * 0.46f, sizeY * 0.28f, paint)
         // right line
         canvas?.drawLine(sizeX * 0.5f, sizeY * 0.14f, sizeX * 0.54f, sizeY * 0.28f, paint)
-
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
